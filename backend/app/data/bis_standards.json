@@ -1,0 +1,895 @@
+{
+  "metadata": {
+    "dataset_version": "1.0.0",
+    "description": "Representative discovery and demo corpus. Clause summaries and QCO flags are indicative, not an official BIS register or complete reproduction of any standard. Verify current editions, amendments, product scope, and Quality Control Orders with BIS and the responsible ministry before procurement or legal use.",
+    "standards_catalog_url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+    "qco_reference_url": "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/",
+    "last_reviewed": "2026-09-26"
+  },
+  "standards": [
+    {
+      "is_code": "IS 1786:2008",
+      "title": "High strength deformed steel bars and wires for concrete reinforcement",
+      "domain": "Civil & Construction",
+      "scope": "TMT reinforcement bars including Fe 500D grades for reinforced concrete.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 1786:2008",
+        "IS 1608 (Part 1):2022"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "tmt",
+        "rebar",
+        "reinforcement",
+        "Fe 500D",
+        "yield",
+        "elongation"
+      ],
+      "key_parameters": {
+        "yield_stress_min_mpa": 500,
+        "elongation_min_pct": 16,
+        "carbon_equivalent_max_pct": 0.53,
+        "carbon_max_pct": 0.25
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Mechanical properties",
+          "title": "Tensile and bend properties",
+          "requirement": "Supply grade-specific tensile, elongation, bend and rebend test evidence; values must comply with the applicable grade table and amendments.",
+          "testing_method": "Tensile test and bend/rebend tests per referenced methods",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Chemical composition",
+          "title": "Heat chemistry and weldability",
+          "requirement": "Heat analysis and carbon-equivalent limits shall comply with the selected grade and applicable table.",
+          "testing_method": "Chemical analysis of ladle sample",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 456:2000",
+      "title": "Plain and reinforced concrete — Code of practice",
+      "domain": "Civil & Construction",
+      "scope": "Design and construction provisions for plain and reinforced concrete structures.",
+      "qco_mandatory": false,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 456:2000",
+        "IS 10262:2019"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "concrete",
+        "reinforced",
+        "mix design",
+        "slump",
+        "compressive strength",
+        "curing"
+      ],
+      "key_parameters": {
+        "minimum_grade_general_rc": "M20",
+        "maximum_water_cement_ratio_durability": 0.45,
+        "minimum_cover_exposure_mm": 20
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "5–6",
+          "title": "Materials and concrete quality",
+          "requirement": "Concrete materials, mix proportioning, production and acceptance shall meet the specified grade and applicable durability provisions.",
+          "testing_method": "Fresh concrete and compressive-strength sampling/testing",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "26",
+          "title": "Reinforcement detailing",
+          "requirement": "Reinforcement design, development length, cover and detailing shall be shown and executed to the applicable exposure and structural provisions.",
+          "testing_method": "Drawing review and site inspection",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 8112:2013",
+      "title": "43 grade ordinary Portland cement — Specification",
+      "domain": "Civil & Construction",
+      "scope": "43 grade ordinary Portland cement for general construction.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 8112:2013",
+        "IS 4031 (Parts 1–15)"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "cement",
+        "OPC",
+        "43 grade",
+        "setting time",
+        "fineness",
+        "compressive strength"
+      ],
+      "key_parameters": {
+        "compressive_strength_28d_min_mpa": 43,
+        "initial_setting_time_min_min": 30,
+        "soundness_le_chatelier_max_mm": 10
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "4",
+          "title": "Physical requirements",
+          "requirement": "Cement shall satisfy the applicable fineness, setting-time, soundness and strength requirements for 43 grade.",
+          "testing_method": "Tests from applicable parts of IS 4031",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Marking",
+          "title": "Identification and certification",
+          "requirement": "Bags and delivery documentation shall identify grade, manufacturer, batch and applicable BIS licence/mark where compulsory certification applies.",
+          "testing_method": "Document and package inspection",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 2062:2011",
+      "title": "Hot rolled medium and high tensile structural steel — Specification",
+      "domain": "Civil & Construction",
+      "scope": "Hot-rolled structural steel products; grade and quality designation depend on product form and thickness.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 2062:2011",
+        "IS 1608 (Part 1):2022"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "structural steel",
+        "E250",
+        "plate",
+        "section",
+        "impact",
+        "yield strength"
+      ],
+      "key_parameters": {
+        "yield_stress_min_mpa_thickness_dependent": 250,
+        "tensile_strength_range_mpa": [
+          410,
+          540
+        ],
+        "impact_test_temperature_c": 0
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "4",
+          "title": "Chemical composition and mechanical properties",
+          "requirement": "Grade, quality, thickness, chemistry and mechanical properties shall meet the applicable product table and delivery condition.",
+          "testing_method": "Chemical analysis and tensile testing",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Inspection",
+          "title": "Heat traceability and test certificate",
+          "requirement": "Each supplied lot shall be traceable to its heat and accompanied by agreed mill test results, including impact testing when specified.",
+          "testing_method": "Certificate review and lot identification",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 10500:2012",
+      "title": "Drinking water — Specification",
+      "domain": "Civil & Construction",
+      "scope": "Acceptability requirements for drinking water at the point of supply, including permissible limits under specified conditions.",
+      "qco_mandatory": false,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 10500:2012",
+        "IS 3025 series"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "drinking water",
+        "potable",
+        "pH",
+        "turbidity",
+        "TDS",
+        "fluoride",
+        "microbiological"
+      ],
+      "key_parameters": {
+        "ph_min": 6.5,
+        "ph_max": 8.5,
+        "turbidity_max_ntu": 1,
+        "tds_acceptable_max_mg_l": 500,
+        "fluoride_max_mg_l": 1.0
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Table 1",
+          "title": "Organoleptic and physicochemical limits",
+          "requirement": "Reported results shall meet acceptable limits or justified permissible limits and identify the chosen sample point.",
+          "testing_method": "Sampling and tests using applicable IS 3025 methods",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Microbiological requirements",
+          "title": "Pathogen safety",
+          "requirement": "Water shall meet the microbiological requirements in the current standard; absence of key indicators must be demonstrated by a competent laboratory.",
+          "testing_method": "Microbiological examination using referenced methods",
+          "criticality": "Critical",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 694:2010",
+      "title": "PVC insulated unsheathed and sheathed cables/cords for working voltages up to and including 1100 V",
+      "domain": "Electrical & Cables",
+      "scope": "PVC insulated cables for fixed wiring and related applications within specified voltage and conductor constructions.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 694:2010",
+        "IS 8130:2013"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "PVC cable",
+        "1100V",
+        "1.1 kV",
+        "copper conductor",
+        "voltage",
+        "insulation resistance"
+      ],
+      "key_parameters": {
+        "voltage_rating_ac_v": 1100,
+        "conductor_temperature_max_c": 70,
+        "conductor_standard": "IS 8130"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Construction",
+          "title": "Conductor and insulation",
+          "requirement": "Conductor class/size, insulation type, sheath, voltage rating and marking shall match the specified cable type.",
+          "testing_method": "Constructional verification and conductor resistance test",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Electrical tests",
+          "title": "Voltage withstand and insulation",
+          "requirement": "Cable samples shall pass the applicable routine/type tests, including voltage withstand and insulation-resistance tests.",
+          "testing_method": "Electrical tests per IS 694 and referenced methods",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 7098 (Part 1):1988",
+      "title": "Cross-linked polyethylene insulated PVC sheathed cables — Part 1: For working voltages up to and including 1100 V",
+      "domain": "Electrical & Cables",
+      "scope": "XLPE insulated, PVC sheathed power cables up to 1.1 kV; verify current amendments and product scope.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 7098 (Part 1):1988",
+        "IS 8130:2013"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "XLPE",
+        "armoured cable",
+        "1.1 kV",
+        "1100V",
+        "cross-linked polyethylene",
+        "power cable"
+      ],
+      "key_parameters": {
+        "voltage_rating_ac_v": 1100,
+        "insulation_material": "XLPE",
+        "conductor_temperature_max_c": 90
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Construction",
+          "title": "Cable construction and armour",
+          "requirement": "Conductor, XLPE insulation, sheath, armour where specified, dimensions and voltage designation shall comply with the applicable type.",
+          "testing_method": "Dimensional and constructional inspection",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Tests",
+          "title": "Electrical and performance tests",
+          "requirement": "The prescribed routine, sample and type tests shall be documented for the supplied design and batch.",
+          "testing_method": "Referenced electrical, mechanical and ageing tests",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 3043:2018",
+      "title": "Code of practice for earthing",
+      "domain": "Electrical & Cables",
+      "scope": "Guidance for system earthing, protective earthing and earthing conductors/electrodes.",
+      "qco_mandatory": false,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 3043:2018",
+        "IS 732:2019"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "earthing",
+        "grounding",
+        "earth electrode",
+        "earth resistance",
+        "protective conductor",
+        "fault current"
+      ],
+      "key_parameters": {
+        "earth_resistance_max_ohm_project_defined": 5,
+        "protective_conductor": "sized for fault duty and installation"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Design",
+          "title": "Earthing arrangement and fault duty",
+          "requirement": "Design shall state the earthing arrangement, conductor sizing, fault-current duty and electrode layout appropriate to site conditions.",
+          "testing_method": "Design calculation and installation inspection",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Verification",
+          "title": "Continuity and earth measurements",
+          "requirement": "Protective conductor continuity and electrode/system performance shall be measured and recorded against project criteria.",
+          "testing_method": "Continuity and earth resistance/impedance measurement",
+          "criticality": "Critical",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 3854:1997",
+      "title": "Switches for domestic and similar purposes — Specification",
+      "domain": "Electrical & Cables",
+      "scope": "Manual switches for fixed electrical installations in domestic and similar premises.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 3854:1997",
+        "IS 1293:2019"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "domestic switch",
+        "switches",
+        "rated current",
+        "rated voltage",
+        "electrical safety",
+        "temperature rise"
+      ],
+      "key_parameters": {
+        "rated_voltage_ac_v": 250,
+        "rated_current_a_project_selected": 16,
+        "frequency_hz": 50
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Ratings and construction",
+          "title": "Rated values and safe construction",
+          "requirement": "The declared current, voltage, terminal arrangement and enclosure shall be suitable for the intended installation and comply with the applicable product classification.",
+          "testing_method": "Marking and construction inspection",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Performance tests",
+          "title": "Electrical endurance and temperature rise",
+          "requirement": "Switches shall pass applicable endurance, temperature-rise, dielectric and abnormal-operation tests.",
+          "testing_method": "Type tests per applicable standard",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 15652:2006",
+      "title": "Insulating mats for electrical purposes — Specification",
+      "domain": "Electrical & Cables",
+      "scope": "Insulating mats for use in electrical installations, classified by voltage class and thickness.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 15652:2006"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "insulating mat",
+        "electrical safety",
+        "voltage class",
+        "dielectric strength",
+        "rubber mat"
+      ],
+      "key_parameters": {
+        "voltage_class_kv_project_selected": 11,
+        "minimum_thickness_mm_class_dependent": 2.0,
+        "dielectric_test_voltage_class_dependent": true
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Classification",
+          "title": "Voltage class and dimensions",
+          "requirement": "Mat voltage class, thickness, surface and size shall be declared and appropriate to the installation risk assessment.",
+          "testing_method": "Dimensional and visual inspection",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Electrical tests",
+          "title": "Dielectric strength and insulation",
+          "requirement": "Each applicable class shall meet the prescribed dielectric and insulation tests with batch traceability.",
+          "testing_method": "High-voltage dielectric test per standard",
+          "criticality": "Critical",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 13252 (Part 1):2010",
+      "title": "Information technology equipment — Safety — Part 1: General requirements",
+      "domain": "Electronics & IT",
+      "scope": "Safety requirements for covered IT equipment; current CRS inclusion and applicable transition notices must be checked.",
+      "qco_mandatory": true,
+      "certification_mark": "BIS CRS",
+      "testing_standards": [
+        "IS 13252 (Part 1):2010",
+        "IEC 60950-1 legacy reference where applicable"
+      ],
+      "url": "https://www.crsbis.in/BIS/publicdashAction.do?hmode=getCompulsoryProductsList",
+      "keywords": [
+        "IT equipment",
+        "CRS",
+        "computer",
+        "adapter",
+        "electrical safety",
+        "IS 13252"
+      ],
+      "key_parameters": {
+        "rated_input_voltage_v_project_declared": 230,
+        "electric_shock_protection": "Class I or Class II as designed",
+        "crs_registration_required": "verify current product category"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Electrical safety",
+          "title": "Protection from electric shock and fire",
+          "requirement": "Covered product shall satisfy the applicable electrical, fire and mechanical safety requirements and hold the registration required by current CRS scope.",
+          "testing_method": "Accredited laboratory safety test and CRS registration verification",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Marking",
+          "title": "Rating and registration identification",
+          "requirement": "Required rating labels, manufacturer identity and valid registration details shall be present on the product/packaging as applicable.",
+          "testing_method": "Label inspection and registration lookup",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 616:2017",
+      "title": "Audio, video and similar electronic apparatus — Safety requirements",
+      "domain": "Electronics & IT",
+      "scope": "Safety requirements for covered audio/video and similar apparatus; verify current CRS product scope.",
+      "qco_mandatory": true,
+      "certification_mark": "BIS CRS",
+      "testing_standards": [
+        "IS 616:2017",
+        "IEC 60065 legacy reference where applicable"
+      ],
+      "url": "https://www.crsbis.in/BIS/publicdashAction.do?hmode=getCompulsoryProductsList",
+      "keywords": [
+        "audio",
+        "video",
+        "television",
+        "AV apparatus",
+        "CRS",
+        "electrical safety"
+      ],
+      "key_parameters": {
+        "supply_voltage_v_project_declared": 230,
+        "protective_earthing_class_dependent": true,
+        "crs_registration_required": "verify current product category"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Safety",
+          "title": "Protection against electrical and fire hazards",
+          "requirement": "Apparatus shall meet the applicable safety construction, insulation, temperature and abnormal-operation requirements.",
+          "testing_method": "Product safety type tests",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Registration and marking",
+          "title": "CRS coverage and identification",
+          "requirement": "Where the product is covered, valid CRS registration and required identification shall be verified before supply.",
+          "testing_method": "CRS record and product label inspection",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 16046 (Part 2):2018",
+      "title": "Secondary cells and batteries containing alkaline or other non-acid electrolytes — Safety requirements for lithium systems",
+      "domain": "Electronics & IT",
+      "scope": "Safety of portable sealed secondary lithium cells and batteries; part and product scope must be matched carefully.",
+      "qco_mandatory": true,
+      "certification_mark": "BIS CRS",
+      "testing_standards": [
+        "IS 16046 (Part 2):2018",
+        "IEC 62133-2:2017"
+      ],
+      "url": "https://www.crsbis.in/BIS/publicdashAction.do?hmode=getCompulsoryProductsList",
+      "keywords": [
+        "lithium battery",
+        "battery pack",
+        "cell",
+        "portable",
+        "CRS",
+        "overcharge",
+        "short circuit"
+      ],
+      "key_parameters": {
+        "chemistry": "lithium system",
+        "nominal_voltage_v_cell_chemistry_dependent": 3.7,
+        "crs_registration_required": "verify current cell/battery category"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Safety tests",
+          "title": "Abuse and fault-condition safety",
+          "requirement": "Applicable cell/battery design shall pass the specified electrical, mechanical and environmental abuse tests without unacceptable hazards.",
+          "testing_method": "Tests selected from applicable IS 16046 part and product category",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Traceability",
+          "title": "Cell identity and registration",
+          "requirement": "Cell model, pack configuration, manufacturer and applicable CRS registration shall be traceable to the offered product.",
+          "testing_method": "Certificate and model-list verification",
+          "criticality": "Critical",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 1391 (Part 1):2017",
+      "title": "Room air conditioners — Part 1: Unitary air conditioners",
+      "domain": "Mechanical & HVAC",
+      "scope": "Room air conditioners; performance rating and energy-label requirements depend on current BEE schedules and product category.",
+      "qco_mandatory": false,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 1391 (Part 1):2017",
+        "IS 1391 (Part 2):2018"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "room AC",
+        "air conditioner",
+        "1.5 TR",
+        "ISEER",
+        "cooling capacity",
+        "energy efficiency"
+      ],
+      "key_parameters": {
+        "cooling_capacity_tr_project_selected": 1.5,
+        "eer_iseer_min_current_label_schedule_dependent": true,
+        "refrigerant": "declare type and charge"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Performance",
+          "title": "Cooling capacity and efficiency",
+          "requirement": "Declared capacity, power input and efficiency shall be tested using the applicable product method and current BEE label schedule.",
+          "testing_method": "Calorimeter/psychrometric performance test per applicable method",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Installation and safety",
+          "title": "Electrical and operating safety",
+          "requirement": "Ratings, protection, refrigerant and installation conditions shall be suitable for the specified supply and operating environment.",
+          "testing_method": "Safety, electrical and operating checks",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 1239 (Part 1):2004",
+      "title": "Steel tubes, tubulars and other wrought steel fittings — Part 1: Steel tubes",
+      "domain": "Mechanical & HVAC",
+      "scope": "Steel tubes for water, gas, air and steam service in applicable light, medium and heavy classes.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 1239 (Part 1):2004",
+        "IS 1608 (Part 1):2022"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "mild steel tube",
+        "MS pipe",
+        "steel tube",
+        "nominal bore",
+        "hydrostatic test",
+        "galvanized"
+      ],
+      "key_parameters": {
+        "tube_class": "light/medium/heavy as specified",
+        "nominal_bore_mm_project_selected": 25,
+        "hydrostatic_test": "per size/class table"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Dimensions and mass",
+          "title": "Tube class and tolerances",
+          "requirement": "Nominal bore, class, outside diameter, wall thickness, mass and end finish shall match the applicable table.",
+          "testing_method": "Dimensional and mass-per-length verification",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Tests",
+          "title": "Hydrostatic and material quality",
+          "requirement": "The supplied tubes shall meet the prescribed hydrostatic and applicable material tests and be traceable to the batch.",
+          "testing_method": "Hydrostatic test and chemical/mechanical tests where specified",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 1520:1980",
+      "title": "Horizontal centrifugal pumps for clear, cold water — Specification",
+      "domain": "Mechanical & HVAC",
+      "scope": "Horizontal centrifugal pumps for clear cold water under specified operating and installation conditions.",
+      "qco_mandatory": false,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 1520:1980",
+        "IS 9137:1978"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "centrifugal pump",
+        "clear water",
+        "head",
+        "flow",
+        "efficiency",
+        "pump test"
+      ],
+      "key_parameters": {
+        "rated_flow_m3_h_project_selected": 10,
+        "rated_head_m_project_selected": 30,
+        "test_acceptance": "guarantee point and tolerances per purchase spec"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Performance",
+          "title": "Duty point and efficiency",
+          "requirement": "Offered pump shall meet the specified flow/head duty and guaranteed performance within agreed tolerances.",
+          "testing_method": "Hydraulic performance test at agreed test facility",
+          "criticality": "High",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Materials and inspection",
+          "title": "Construction and documentation",
+          "requirement": "Wetted materials, seals, motor data and inspection/test certificates shall be declared and suitable for clear-water service.",
+          "testing_method": "Document review and visual/material inspection",
+          "criticality": "Medium",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 2878:2004",
+      "title": "Fire extinguishers — Carbon dioxide type — Specification",
+      "domain": "Mechanical & HVAC",
+      "scope": "Carbon dioxide portable fire extinguishers, capacity and ratings selected for the intended hazard and application.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 2878:2004",
+        "IS 15683:2018 where applicable"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "CO2 extinguisher",
+        "carbon dioxide",
+        "fire extinguisher",
+        "discharge",
+        "cylinder",
+        "fire safety"
+      ],
+      "key_parameters": {
+        "extinguishing_medium": "carbon dioxide",
+        "capacity_kg_project_selected": 4.5,
+        "operating_pressure_mpa_design_dependent": true
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Construction and charge",
+          "title": "Pressure vessel and extinguishing medium",
+          "requirement": "Cylinder, valve, hose/horn, charge and safety devices shall be suitable for the declared extinguisher type and capacity.",
+          "testing_method": "Hydrostatic/pressure and component tests as applicable",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Performance and marking",
+          "title": "Discharge, inspection and identification",
+          "requirement": "Discharge performance, inspection interval, refill information and required product certification/marking shall be verified.",
+          "testing_method": "Performance test and label/document review",
+          "criticality": "Critical",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 15748:2007",
+      "title": "Protective clothing for industrial workers exposed to heat — Performance requirements",
+      "domain": "Textiles & PPE",
+      "scope": "Heat-protective clothing; selected performance class must match the workplace hazard and applicable edition.",
+      "qco_mandatory": false,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 15748:2007",
+        "ISO 11612:2015 reference for comparison only"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "heat resistant clothing",
+        "protective clothing",
+        "flame",
+        "heat transfer",
+        "PPE",
+        "thermal hazard"
+      ],
+      "key_parameters": {
+        "heat_exposure_class": "risk-assessment dependent",
+        "flame_spread": "class and test method to be specified",
+        "garment_design": "cover body areas identified by hazard assessment"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Performance",
+          "title": "Thermal hazard protection",
+          "requirement": "Garment shall be selected and tested for the declared heat/flame hazards and the performance class shall be documented.",
+          "testing_method": "Thermal, flame and heat-transfer tests specified by applicable edition",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Fit and care",
+          "title": "Coverage, closure and maintenance",
+          "requirement": "Design, closures, compatibility, size range, cleaning and retirement instructions shall be stated for safe use.",
+          "testing_method": "Visual/ergonomic inspection and instructions review",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 2925:1984",
+      "title": "Industrial safety helmets — Specification",
+      "domain": "Textiles & PPE",
+      "scope": "Industrial protective helmets for head protection; verify current amendments and intended use conditions.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 2925:1984"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "safety helmet",
+        "hard hat",
+        "impact",
+        "penetration",
+        "electrical insulation",
+        "PPE"
+      ],
+      "key_parameters": {
+        "impact_absorption": "pass applicable conditioning and impact tests",
+        "penetration_resistance": "pass applicable penetration test",
+        "electrical_class": "declare if required by hazard assessment"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Performance tests",
+          "title": "Impact and penetration protection",
+          "requirement": "Helmet shell and harness shall pass applicable impact, penetration and conditioning requirements for the declared type.",
+          "testing_method": "Impact and penetration tests using specified conditioning",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Marking and fit",
+          "title": "Manufacturer, date and adjustment",
+          "requirement": "Helmet shall carry legible identification and be supplied with compatible, adjustable harness and user instructions.",
+          "testing_method": "Marking and physical inspection",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    },
+    {
+      "is_code": "IS 15298 (Part 2):2016",
+      "title": "Personal protective equipment — Safety footwear — Part 2: Requirements and test methods for safety footwear",
+      "domain": "Textiles & PPE",
+      "scope": "Safety footwear for professional use; protection category and features shall match the workplace risk.",
+      "qco_mandatory": true,
+      "certification_mark": "ISI Mark (Scheme-I)",
+      "testing_standards": [
+        "IS 15298 (Part 2):2016",
+        "IS 15298 (Part 1):2016"
+      ],
+      "url": "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/standardsearch",
+      "keywords": [
+        "safety footwear",
+        "safety shoes",
+        "toe cap",
+        "puncture resistance",
+        "slip resistance",
+        "PPE"
+      ],
+      "key_parameters": {
+        "toe_protection": "category and impact level specified by risk",
+        "puncture_resistance": "required where underfoot hazard exists",
+        "slip_resistance": "application dependent"
+      },
+      "mandatory_clauses": [
+        {
+          "clause_no": "Category and performance",
+          "title": "Toe and sole protection",
+          "requirement": "Footwear shall declare the protection category and pass the applicable impact/compression and sole tests for the hazards specified.",
+          "testing_method": "Impact, compression, penetration and slip tests as applicable",
+          "criticality": "Critical",
+          "is_mandatory": true
+        },
+        {
+          "clause_no": "Fit and marking",
+          "title": "Size, construction and identification",
+          "requirement": "Size, model, materials and protective features shall be identifiable; footwear shall be suitable for the work environment.",
+          "testing_method": "Visual, dimensional and certificate review",
+          "criticality": "High",
+          "is_mandatory": true
+        }
+      ]
+    }
+  ]
+}
