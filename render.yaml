@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: bis-spec-sih
+    runtime: docker
+    repo: https://github.com/pradhumn-web/is-engine
+    branch: main
+    region: singapore
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeployTrigger: commit

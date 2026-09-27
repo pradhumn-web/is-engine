@@ -2,10 +2,11 @@
 
 A demo-ready React + FastAPI workbench for standards-based procurement screening. The landing screen loads a representative Fe 500D metro-rebar tender and runs the analysis automatically, so a live showcase begins with extracted engineering signals, recommended standards and an officer view already populated.
 
-## Live prototype
+## Permanent demo deployment
 
-- Workbench: https://5173-im1oqjpabm3z96o5dr55w-849b52dc.sg2.manus.computer/
-- API docs: https://8000-im1oqjpabm3z96o5dr55w-849b52dc.sg2.manus.computer/docs
+The production service is defined by `render.yaml` and the root `Dockerfile`. It builds the React UI and serves it with the FastAPI API from the same origin. Once the service is created from the Blueprint, Render provides its shareable HTTPS URL; the API docs are available at `/docs` and the SIH guide at `/sih-user-guide.html`.
+
+To set it up, connect `pradhumn-web/is-engine` in Render and apply the Blueprint. Subsequent pushes to `main` trigger deployments automatically. The free demo service may sleep after 15 minutes of inactivity, making its first request after sleep take about a minute. Do not rely on its local filesystem or in-memory analytics for persistent data.
 
 ## Demo flow
 
@@ -58,7 +59,7 @@ npm run build
 
 ## Prototype boundaries
 
-The 20-entry corpus and clause summaries are indicative reference/demo data, not an authoritative BIS register. Verify live editions, amendments, QCO notifications, CRS scope and tender applicability from official sources before procurement or legal reliance. Automated analysis is not engineering, legal or certification advice. Analytics and indexing are in-memory; scanned PDFs are not OCR'd. The public preview is served from a temporary sandbox and is not a permanent production deployment.
+The 20-entry corpus and clause summaries are indicative reference/demo data, not an authoritative BIS register. Verify live editions, amendments, QCO notifications, CRS scope and tender applicability from official sources before procurement or legal reliance. Automated analysis is not engineering, legal or certification advice. Analytics and indexing are in-memory; scanned PDFs are not OCR'd. The demo has no user authentication and its shareable hosting URL is public. Free hosting may sleep when idle, and all data held only in process memory resets on restart or redeploy.
 
 ## SIH submission guide
 
