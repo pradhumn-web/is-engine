@@ -1,5 +1,7 @@
 export const SESSION_STORAGE_KEY = 'bis_demo_session';
 export const BIDDER_PROFILE_STORAGE_KEY = 'bis_demo_bidder_profile';
+export const BIDDER_HISTORY_STORAGE_KEY = 'bis_demo_bidder_history';
+export const MAX_BIDDER_HISTORY = 100;
 export const VALID_ROLES = ['officer', 'contractor'];
 export const TECHNICAL_FIELDS = [
   'Civil & Construction',
@@ -66,4 +68,58 @@ export function readDemoSession(storage) {
   } catch {
     return null;
   }
+}
+
+export function readBidderHistory(storage) {
+  try {
+    const target = storage || globalThis.localStorage;
+    if (!target) return [];
+    const entries = JSON.parse(target.getItem(BIDDER_HISTORY_STORAGE_KEY) || '[]');
+    if (!Array.isArray(entries)) return [];
+    return entries.map(entry => {
+      const profile = normalizeBidderProfile(entry);
+      const startedAt = typeof entry.startedAt === 'string' && Number.isFinite(Date.parse(entry.startedAt))
+        ? new Date(entry.startedAt).toISOString()
+        : '';
+      if (!startedAt || !profile.technicalField || profile.experienceYears === null) return null;
+      return {
+        id: String(entry.id || startedAt).slice(0, 96),
+        displayName: profile.displayName || 'Demo Bidder',
+        experienceYears: profile.experienceYears,
+        technicalField: profile.technicalField,
+        startedAt,
+      };
+    }).filter(Boolean).sort((a, b) => Date.parse(b.startedAt) - Date.parse(a.startedAt)).slice(0, MAX_BIDDER_HISTORY);
+  } catch {
+    return [];
+  }
+}
+
+export function appendBidderHistory(session, storage, now = new Date()) {
+  let target = storage;
+  if (!target) {
+    try { target = globalThis.localStorage; } catch { target = null; }
+  }
+  const current = readBidderHistory(target);
+  const profile = normalizeBidderProfile(session?.bidderProfile);
+  if (session?.role !== 'contractor' || !profile.technicalField || profile.experienceYears === null) return current;
+  const startedAt = new Date(session.startedAt || now).toISOString();
+  const entry = {
+    id: `${startedAt}-${Math.random().toString(36).slice(2, 8)}`,
+    displayName: String(session.displayName || profile.displayName || 'Demo Bidder').trim().slice(0, 48),
+    experienceYears: profile.experienceYears,
+    technicalField: profile.technicalField,
+    startedAt,
+  };
+  const next = [entry, ...current].slice(0, MAX_BIDDER_HISTORY);
+  try { target?.setItem(BIDDER_HISTORY_STORAGE_KEY, JSON.stringify(next)); } catch { /* local demo history is optional */ }
+  return next;
+}
+
+export function summarizeBidderHistory(entries = []) {
+  return {
+    sessionCount: entries.length,
+    distinctNameCount: new Set(entries.map(entry => String(entry.displayName || '').trim().toLocaleLowerCase()).filter(Boolean)).size,
+    technicalFieldCount: new Set(entries.map(entry => entry.technicalField).filter(field => TECHNICAL_FIELDS.includes(field))).size,
+  };
 }

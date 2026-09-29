@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EXAMPLES, hasClauseAudit } from './App.jsx';
+import { DEMO_PROJECTS, EXAMPLES, getWorkspaceNav, hasClauseAudit } from './App.jsx';
 
 describe('BIS.SPEC tender demonstration data', () => {
   it('offers seven tender examples including the three new scenarios', () => {
@@ -28,5 +28,19 @@ describe('BIS.SPEC tender demonstration data', () => {
     expect(hasClauseAudit({ catalogue_only: true, mandatory_clauses: [] })).toBe(false);
     expect(hasClauseAudit({ catalogue_only: false, mandatory_clauses: [{ clause_no: '5.1' }] })).toBe(true);
     expect(hasClauseAudit({ catalogue_only: false, mandatory_clauses: [] })).toBe(false);
+  });
+
+  it('keeps Bidder history Officer-only and Upcoming projects Bidder-only', () => {
+    expect(getWorkspaceNav(true).map(([id]) => id)).toContain('history');
+    expect(getWorkspaceNav(true).map(([id]) => id)).not.toContain('projects');
+    expect(getWorkspaceNav(false).map(([id]) => id)).toContain('projects');
+    expect(getWorkspaceNav(false).map(([id]) => id)).not.toContain('history');
+  });
+
+  it('provides actionable project-preparation scenarios without claiming a live tender schedule', () => {
+    expect(DEMO_PROJECTS).toHaveLength(5);
+    expect(DEMO_PROJECTS.every(project => project.illustrative && project.horizon.startsWith('Illustrative'))).toBe(true);
+    expect(DEMO_PROJECTS.every(project => EXAMPLES.some(example => example.name === project.exampleName))).toBe(true);
+    expect(DEMO_PROJECTS.every(project => project.preparation.length >= 3)).toBe(true);
   });
 });

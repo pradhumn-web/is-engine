@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { BIDDER_PROFILE_STORAGE_KEY, createDemoSession, readBidderProfile, readDemoSession, SESSION_STORAGE_KEY } from './roleSession.js';
+import { appendBidderHistory, BIDDER_PROFILE_STORAGE_KEY, createDemoSession, readBidderHistory, readBidderProfile, readDemoSession, SESSION_STORAGE_KEY, summarizeBidderHistory } from './roleSession.js';
 
 const RoleContext = createContext(null);
 
 export function RoleProvider({ children }) {
   const [session, setSession] = useState(() => readDemoSession());
   const [lastBidderProfile, setLastBidderProfile] = useState(() => readBidderProfile());
+  const [bidderHistory, setBidderHistory] = useState(() => readBidderHistory());
 
   useEffect(() => {
     try {
@@ -27,9 +28,15 @@ export function RoleProvider({ children }) {
     isOfficer: session?.role === 'officer',
     isContractor: session?.role === 'contractor',
     bidderProfile: session?.role === 'contractor' ? session.bidderProfile || null : lastBidderProfile,
-    signIn: (role, displayName, bidderProfile) => setSession(createDemoSession(role, displayName, bidderProfile)),
+    signIn: (role, displayName, bidderProfile) => {
+      const nextSession = createDemoSession(role, displayName, bidderProfile);
+      if (role === 'contractor') setBidderHistory(appendBidderHistory(nextSession));
+      setSession(nextSession);
+    },
     signOut: () => setSession(null),
-  }), [session, lastBidderProfile]);
+    bidderHistory,
+    bidderHistoryStats: summarizeBidderHistory(bidderHistory),
+  }), [session, lastBidderProfile, bidderHistory]);
 
   return <RoleContext.Provider value={value}>{children}</RoleContext.Provider>;
 }

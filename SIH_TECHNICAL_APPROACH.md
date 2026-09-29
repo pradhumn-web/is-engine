@@ -147,7 +147,7 @@ Request validation includes text length, domain, role, result-count, and file-si
 - **Report generation:** `fpdf2`.
 - **Data store:** JSON corpus loaded into memory; analytics are held in process memory for the running prototype.
 
-A persistent relational database, authentication, long-term analysis history, and automated standards-feed synchronization are not part of the current implementation.
+A persistent relational database, authentication, central/long-term analysis history, and automated standards-feed synchronization are not part of the current implementation. The Officer history tab reads a bounded (100-entry) browser-local log created only on explicit Bidder demo entry; counts are descriptive and names are not verified identities. The Bidder project tab uses static illustrative preparation scenarios and does not claim live tenders.
 
 ## 9. Verification completed
 
@@ -158,7 +158,7 @@ The current backend test suite contains six checks covering:
 3. Leading retrieval results for representative steel-rebar and cable queries.
 4. Availability of both role views and a compliance matrix.
 5. Valid PDF report generation.
-6. Scoping a carbon-limit deviation to the chemistry-related clause. Separate frontend tests cover required bidder-profile fields, browser-local persistence, role validation, and the three added tender examples.
+6. Scoping a carbon-limit deviation to the chemistry-related clause. Frontend tests cover required profile fields, browser-local session and bidder-history persistence, role-specific navigation, bounded history summaries, and the illustrative project scenarios.
 
 The frontend production build has also been run successfully. These tests verify selected behaviors; they do not establish standards coverage, real-tender accuracy, or production readiness.
 
@@ -188,7 +188,7 @@ Every result should be treated as a **screening aid**. Confirm applicable standa
 
 ## 12. SIH presentation summary
 
-> BIS.SPEC is an explainable procurement-screening prototype. It extracts a first set of technical signals from tender text, ranks likely standards with a transparent BM25 + TF-IDF + exact-match blend, and checks selected clause summaries using explicit rules. Its 50-entry directory includes 20 illustrative clause-screening records and 30 BIS-sourced discovery-only records without clause-level audit claims. Separate Officer and Bidder demo desks include a locally stored, self-reported bidder profile. It does not replace official BIS sources, expert judgment, identity controls, or legal compliance decisions.
+> BIS.SPEC is an explainable procurement-screening prototype. It extracts technical signals from tender text, ranks likely standards with a transparent BM25 + TF-IDF + exact-match blend, and screens selected clause summaries using explicit rules. Its 50-entry directory has 20 illustrative clause-screening records and 30 BIS-sourced discovery-only records. The Officer desk shows an unverified, browser-local count of demo Bidder sessions; the Bidder desk offers fictional project-preparation scenarios, not live tender listings. It does not replace official BIS sources, expert judgment, identity controls, or legal compliance decisions.
 
 ## References
 

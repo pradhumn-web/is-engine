@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Activity, AlertTriangle, ArrowDownToLine, ArrowRight, BarChart3, BookOpen,
-  BriefcaseBusiness, Building2, Check, ChevronDown, Clipboard, Copy, Download,
-  FileCheck2, FileText, Filter, Layers3, Menu, Search, ShieldCheck, Upload, UserRound, X,
+  BriefcaseBusiness, Building2, CalendarDays, Check, ChevronDown, Clipboard, ClipboardCheck, Clock3, Copy, Download,
+  FileCheck2, FileText, Filter, Layers3, MapPin, Menu, Search, ShieldCheck, Upload, UserRound, UsersRound, X,
 } from 'lucide-react';
 import { useRole } from './context/RoleContext.jsx';
 import LoginScreen from './LoginScreen.jsx';
@@ -15,6 +15,13 @@ export const EXAMPLES = [
   { name: 'Concrete Paving Blocks', meta: 'CIVIL  /  CAMPUS ACCESS ROAD', domain: 'Civil & Construction', text: 'Supply precast concrete paving blocks for campus access roads and pedestrian areas in the specified shape, thickness, strength class, colour and laying pattern. Product shall comply with IS 15658:2021. Submit lot identification, dimensional inspection records and accredited laboratory test results for the specified performance class.' },
   { name: 'Solar Water Pumping System', meta: 'MECHANICAL  /  REMOTE WATER SUPPLY', domain: 'Mechanical & HVAC', text: 'Supply and commission a solar photovoltaic water pumping system with centrifugal pump, controller and array sized for the stated daily water demand and total dynamic head. The pumping system shall be evaluated against IS 17018 (Part 1):2022. Submit pump performance curve, duty-point test report, controller protections, installation plan and warranty.' },
   { name: 'ICT Equipment Power Adaptors', meta: 'ELECTRONICS & IT  /  OFFICE NETWORK', domain: 'Electronics & IT', text: 'Supply external power adaptors for audio, video and information and communication technology equipment. Safety shall be assessed against IS/IEC 62368 (Part 1):2023, including insulation, temperature, electric shock and fire safeguards applicable to the declared product. Submit model-specific test evidence, markings, rating information and current certification records where applicable.' },
+];
+export const DEMO_PROJECTS = [
+  { id: 'transit-civil', title: 'Urban transit civil works', domain: 'Civil & Construction', location: 'Illustrative urban corridor', horizon: 'Illustrative · no official date', exampleName: 'TMT Rebars Fe 500D', illustrative: true, scope: 'Scenario covering reinforcement steel, structural steel, concrete and related testing for a transport-infrastructure package.', preparation: ['Organise grade-wise mill certificates and batch traceability.', 'Check design compatibility and specified test evidence.', 'Review current standards and applicable notices before responding.'] },
+  { id: 'solar-pumping', title: 'Solar water-pumping cluster', domain: 'Mechanical & HVAC', location: 'Illustrative rural water scheme', horizon: 'Illustrative · no official date', exampleName: 'Solar Water Pumping System', illustrative: true, scope: 'Scenario covering solar pump sets, controls, installation and after-sales support across multiple sites.', preparation: ['Prepare pump curves against the stated duty point.', 'Collect controller, installation and warranty documentation.', 'Keep model-specific test reports and service coverage details ready.'] },
+  { id: 'campus-electrical', title: 'Public campus electrical renewal', domain: 'Electrical & Cables', location: 'Illustrative education facilities', horizon: 'Illustrative · no official date', exampleName: '1.1 kV Control Cables', illustrative: true, scope: 'Scenario covering internal wiring, low-voltage distribution, protective devices and commissioning records.', preparation: ['Map offered products to the tender’s electrical schedule.', 'Gather cable, switchgear and installation evidence by model.', 'Prepare an inspection and commissioning plan.'] },
+  { id: 'healthcare-hvac', title: 'Healthcare ventilation and cooling', domain: 'Mechanical & HVAC', location: 'Illustrative public healthcare sites', horizon: 'Illustrative · no official date', exampleName: '1.5 TR Room ACs', illustrative: true, scope: 'Scenario covering HVAC equipment, ventilation components, controls and performance commissioning.', preparation: ['Prepare performance data at the specified operating conditions.', 'Document filters, controls, service intervals and warranty.', 'Check energy-label and product-scope requirements for each item.'] },
+  { id: 'digital-learning', title: 'Digital learning and network equipment', domain: 'Electronics & IT', location: 'Illustrative school and training sites', horizon: 'Illustrative · no official date', exampleName: 'ICT Equipment Power Adaptors', illustrative: true, scope: 'Scenario covering computing devices, displays, connectivity and power accessories for shared learning spaces.', preparation: ['List exact models, interfaces and included accessories.', 'Collect product-safety and applicable registration evidence.', 'Prepare support, replacement and warranty commitments.'] },
 ];
 const DOMAINS = ['All domains', 'Civil & Construction', 'Electrical & Cables', 'Electronics & IT', 'Mechanical & HVAC', 'Textiles & PPE'];
 const api = async (path, options) => {
@@ -31,7 +38,7 @@ function App() {
 }
 
 function Workspace() {
-  const { userRole, isOfficer, session, bidderProfile, signOut } = useRole();
+  const { userRole, isOfficer, session, bidderProfile, bidderHistory, bidderHistoryStats, signOut } = useRole();
   const [tab, setTab] = useState('analyze');
   const [text, setText] = useState(EXAMPLES[0].text);
   const [domain, setDomain] = useState('All domains');
@@ -116,9 +123,7 @@ function Workspace() {
     };
   }, [mobileMenuOpen]);
 
-  const nav = isOfficer
-    ? [['analyze', 'Tender desk', Layers3], ['analytics', 'Review activity', BarChart3], ['directory', 'Standards library', BookOpen]]
-    : [['analyze', 'Bid readiness', FileCheck2], ['analytics', 'Bid activity', BarChart3], ['directory', 'Standards library', BookOpen]];
+  const nav = getWorkspaceNav(isOfficer);
   return <div className="app-shell">
     <header className="topbar">
       <div className="brand"><div className="brand-mark">[IS]</div><div><strong>BIS.SPEC</strong><span>STANDARDS INTELLIGENCE</span></div><Tag tone="soft">SIH PROTOTYPE</Tag></div>
@@ -127,7 +132,7 @@ function Workspace() {
       {mobileMenuOpen && <nav className="mobile-menu-panel" id="mobile-sections-menu" aria-label="Phone navigation"><div className="mobile-menu-heading">{isOfficer ? 'Officer workspace' : 'Bidder workspace'}</div>{nav.map(([id, label, Icon]) => <button key={id} className={tab === id ? 'active' : ''} onClick={() => { setTab(id); setError(''); setMobileMenuOpen(false); }}><Icon size={16} /><span>{label}</span>{tab === id && <Check size={14} />}</button>)}<a href="/sih-user-guide.html"><BookOpen size={16} /><span>User guide</span><ArrowRight size={14} /></a><a href="/docs" target="_blank" rel="noreferrer"><FileText size={16} /><span>API documentation</span><ArrowRight size={14} /></a><button className="mobile-change-role" onClick={() => { setMobileMenuOpen(false); signOut(); }}><Building2 size={16} /><span>Change workspace</span><ArrowRight size={14} /></button></nav>}
     </header>
     <main className="page-wrap">
-      <div className="page-heading" data-reveal><div><div className="eyebrow">{isOfficer ? 'BUYER WORKSPACE · TENDER REVIEW' : 'BIDDER WORKSPACE · BID PREPARATION'}</div><h1>{tab === 'analyze' ? (isOfficer ? 'Tender review desk' : 'Bid readiness desk') : tab === 'analytics' ? (isOfficer ? 'Review activity' : 'Bid activity') : 'Standards library'}</h1><p>{tab === 'analyze' ? (isOfficer ? 'Check requirements before publication and prepare a clearer, evidence-led tender.' : 'See what your bid should demonstrate and which evidence may still be missing.') : tab === 'analytics' ? 'A session summary of standards coverage, matches and observed gaps.' : 'Search the reference catalog by standard, product or domain.'}</p></div><div className="header-stat"><div className="stat-icon"><ShieldCheck size={17} /></div><div><b>{catalogCount}</b><span>REFERENCE STANDARDS</span></div></div></div>
+      <div className="page-heading" data-reveal><div><div className="eyebrow">{isOfficer ? 'BUYER WORKSPACE · TENDER REVIEW' : 'BIDDER WORKSPACE · BID PREPARATION'}</div><h1>{tab === 'analyze' ? (isOfficer ? 'Tender review desk' : 'Bid readiness desk') : tab === 'history' ? 'Bidder history' : tab === 'projects' ? 'Project outlook' : tab === 'analytics' ? (isOfficer ? 'Review activity' : 'Bid activity') : 'Standards library'}</h1><p>{tab === 'analyze' ? (isOfficer ? 'Check requirements before publication and prepare a clearer, evidence-led tender.' : 'See what your bid should demonstrate and which evidence may still be missing.') : tab === 'history' ? 'A browser-local count of demo Bidder sessions and the self-reported profile fields they entered.' : tab === 'projects' ? 'Illustrative public-procurement scenarios to help contractors prepare—not confirmed tenders or official schedules.' : tab === 'analytics' ? 'A session summary of standards coverage, matches and observed gaps.' : 'Search the reference catalog by standard, product or domain.'}</p></div><div className="header-stat"><div className="stat-icon"><ShieldCheck size={17} /></div><div><b>{catalogCount}</b><span>REFERENCE STANDARDS</span></div></div></div>
       {error && <div className="error-banner"><AlertTriangle size={16} />{error}<button onClick={() => setError('')}><X size={15} /></button></div>}
       {tab === 'analyze' && <>
         <section className={`demo-banner role-banner ${userRole}`} data-reveal><div className="demo-mark">{isOfficer ? <Building2 size={16} /> : <BriefcaseBusiness size={16} />}</div><div><b>{isOfficer ? 'OFFICER DESK · TENDER QUALITY CHECK' : 'BIDDER DESK · EVIDENCE READINESS'}</b><span>{isOfficer ? 'Review the draft clauses, standards references and supplier evidence checklist.' : 'Check the sample offer against the cited standard and prepare your supporting documents.'}</span></div><Tag tone="green">DEMO MODE</Tag></section>{isOfficer && <section className="bidder-profile-strip panel" data-reveal><div className="profile-strip-icon"><UserRound size={17} /></div><div><div className="eyebrow">BIDDER PROFILE · SELF-REPORTED DEMO</div><b>{bidderProfile ? bidderProfile.displayName || 'Demo Bidder' : 'No bidder profile added yet'}</b><span>{bidderProfile ? `${bidderProfile.experienceYears} years’ relevant experience · ${bidderProfile.technicalField}` : 'Switch to Bidder / Contractor on this browser to add experience and a main technical field.'}</span></div><Tag tone="soft">{bidderProfile ? 'NOT VERIFIED' : 'OPTIONAL PREVIEW'}</Tag></section>}
@@ -151,11 +156,49 @@ function Workspace() {
         </section>}
       </>}
       {tab === 'analytics' && <div data-reveal><Analytics data={analytics} /></div>}
+      {tab === 'history' && isOfficer && <BidderHistoryView entries={bidderHistory} stats={bidderHistoryStats} />}
+      {tab === 'projects' && !isOfficer && <DemoProjectOutlook technicalField={bidderProfile?.technicalField || ''} onChoose={exampleName => { const example = EXAMPLES.find(item => item.name === exampleName); if (example) { setText(example.text); setFile(null); setDomain('All domains'); setResult(null); setTab('analyze'); } }} />}
       {tab === 'directory' && <section className="panel directory-panel" data-reveal><div className="directory-head"><div><div className="eyebrow">REFERENCE CATALOG / {catalogCount} ENTRIES</div><h2>Indian Standards directory</h2></div><div className="search-box"><Search size={15} /><input placeholder="Search code, product, keyword…" value={search} onChange={e => setSearch(e.target.value)} /></div></div><div className="domain-pills">{DOMAINS.slice(1).map(d => <button key={d} className={domain === d ? 'selected' : ''} onClick={() => setDomain(domain === d ? 'All domains' : d)}>{d}</button>)}</div><Directory data={catalog.filter(s => domain === 'All domains' || s.domain === domain)} loading={catalogLoading} /></section>}
     </main>
     <footer data-reveal><span>© BIS.SPEC / PROCUREMENT INTELLIGENCE</span><span>DEMO REFERENCES — CHECK OFFICIAL BIS NOTIFICATIONS <a href="https://www.bis.gov.in/" target="_blank" rel="noreferrer">BIS ↗</a></span></footer>
     {modal && <Modal data={modal} result={result} onClose={() => setModal(null)} />}
   </div>;
+}
+
+export function getWorkspaceNav(isOfficer) {
+  return isOfficer
+    ? [['analyze', 'Tender desk', Layers3], ['history', 'Bidder history', UsersRound], ['analytics', 'Review activity', BarChart3], ['directory', 'Standards library', BookOpen]]
+    : [['analyze', 'Bid readiness', FileCheck2], ['projects', 'Upcoming projects', CalendarDays], ['analytics', 'Bid activity', BarChart3], ['directory', 'Standards library', BookOpen]];
+}
+
+function BidderHistoryView({ entries, stats }) {
+  return <section className="history-view" data-reveal>
+    <div className="history-intro panel"><div className="history-intro-mark"><UsersRound size={19} /></div><div><div className="eyebrow">OFFICER DESK · DEMO ACTIVITY</div><h2>Bidder / Contractor history</h2><p>Counts demo Bidder entries made in this browser. A repeated name can represent the same person or different people; names and profiles are not verified.</p></div><Tag tone="amber">LOCAL DEMO ONLY</Tag></div>
+    <div className="history-kpis"><div className="panel history-kpi"><span>Bidder demo sessions</span><b>{stats.sessionCount}</b><small>Each successful demo Bidder entry</small></div><div className="panel history-kpi"><span>Distinct names entered</span><b>{stats.distinctNameCount}</b><small>Text labels only, not verified identities</small></div><div className="panel history-kpi"><span>Technical fields shown</span><b>{stats.technicalFieldCount}</b><small>Categories represented in this browser</small></div></div>
+    <section className="panel history-register"><div className="history-register-head"><div><div className="eyebrow">RECENT ACTIVITY</div><h3>Demo Bidder entries</h3></div><span>Up to 100 recent entries · stored on this device only</span></div>
+      {entries.length ? <div className="history-table-wrap"><table className="history-table"><caption className="sr-only">Browser-local demo Bidder history; all profiles are self-reported and unverified.</caption><thead><tr><th scope="col">Entered</th><th scope="col">Name entered</th><th scope="col">Experience</th><th scope="col">Main technical field</th><th scope="col">Record status</th></tr></thead><tbody>{entries.map(entry => <tr key={entry.id}><td><time dateTime={entry.startedAt}>{formatDemoDate(entry.startedAt)}</time></td><td>{entry.displayName}</td><td>{entry.experienceYears} years</td><td>{entry.technicalField}</td><td><Tag tone="soft">UNVERIFIED DEMO</Tag></td></tr>)}</tbody></table></div> : <Empty text="No Bidder demo sessions have been entered in this browser yet." />}
+    </section>
+    <div className="history-disclaimer"><ShieldCheck size={15} /><span>This history is local to this browser and is not a central bidder registry or procurement record. It may be unavailable on another device or after browser storage is cleared.</span></div>
+  </section>;
+}
+
+function formatDemoDate(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+function DemoProjectOutlook({ technicalField, onChoose }) {
+  return <section className="project-outlook" data-reveal>
+    <div className="project-notice"><CalendarDays size={17} /><div><b>Illustrative project scenarios—not live tenders</b><span>These sample briefs are for bid-preparation practice only. They are not confirmed government projects, procurement notices, dates or commitments. Check official tender portals for live opportunities.</span></div></div>
+    <div className="project-outlook-toolbar"><div><div className="eyebrow">BIDDER DESK · INFORMATION BRIEFINGS</div><h2>Upcoming-project scenarios</h2><p>Explore public-procurement themes and prepare the documents commonly needed for similar tenders.</p></div><Tag tone="amber">DEMO SET · {DEMO_PROJECTS.length} SCENARIOS</Tag></div>
+    <div className="project-grid">{DEMO_PROJECTS.map(project => <article className="panel project-card" key={project.id} data-reveal>
+      <div className="project-card-top"><Tag tone={project.domain === technicalField ? 'green' : 'soft'}>{project.domain === technicalField ? 'YOUR TECHNICAL FIELD' : project.domain.toUpperCase()}</Tag><span className="demo-project-id">DEMO BRIEF</span></div>
+      <h3>{project.title}</h3><div className="project-meta"><span><MapPin size={13} />{project.location}</span><span><Clock3 size={13} />{project.horizon}</span></div>
+      <p className="project-scope">{project.scope}</p><div className="project-checklist-title"><ClipboardCheck size={14} /> PREPARATION NOTES</div><ul>{project.preparation.map(item => <li key={item}>{item}</li>)}</ul>
+      <button className="outline-btn project-sample-btn" onClick={() => onChoose(project.exampleName)}>Open related sample tender <ArrowRight size={14} /></button>
+    </article>)}</div>
+    <p className="project-data-note">No tender number, issuing authority, location-specific schedule, estimated value or procurement date is asserted in these examples.</p>
+  </section>;
 }
 
 function ParameterTags({ data = {} }) {
