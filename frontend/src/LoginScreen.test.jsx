@@ -13,4 +13,16 @@ describe('BIS.SPEC demo sign-in screen', () => {
     expect(markup).toContain('Demo sign-in only');
     expect(markup).not.toContain('type="password"');
   });
+
+  it('requires bidder experience and a primary technical field in the bidder profile form', () => {
+    const markup = renderToStaticMarkup(createElement(LoginScreen, { onSignIn: () => {}, initialRole: 'contractor' }));
+    expect(markup).toContain('Bidder profile');
+    expect(markup).toContain('id="bidder-experience"');
+    expect(markup).toContain('id="bidder-experience" class="login-name-input" type="number"');
+    expect(markup).toContain('min="0" max="60" step="1" required');
+    expect(markup).toContain('id="bidder-technical-field"');
+    expect(markup).toContain('name="technicalField" required');
+    expect(markup).toContain('this browser');
+    expect(markup).not.toContain('type="password"');
+  });
 });

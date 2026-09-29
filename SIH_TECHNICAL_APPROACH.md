@@ -116,13 +116,13 @@ The analysis response includes both perspectives:
 - **Officer view:** vendor evidence checklist, draft tender clauses for SCC/testing/ITB, and revision-code warnings.
 - **Contractor view:** readiness indicator, compliance matrix, required evidence, and conditional equivalence notes.
 
-The role toggle changes the information emphasized in the UI; the API can still return both views for integrations. The UI also provides a standards directory, lightweight session analytics, side-by-side wording comparison, clause breakdown, and PDF audit export.
+The role selector presents distinct Officer and Bidder desks. In this demonstration build, the bidder may enter self-reported experience and a primary technical field; the profile stays in this browser and is shown to the Officer workspace without being sent to the analysis API. The Officer interface offers the audit report control; the Bidder interface hides it as a presentation choice, not an authorization boundary. Catalogue-only records do not receive a clause-readiness score or imply audit completion. The UI also provides the standards directory, session analytics and side-by-side wording comparison.
 
 ## 6. Data and knowledge base
 
-The demonstration catalog is a local JSON file containing **20 representative entries across five domains**. A record can include an IS code, title, domain, scope, keywords, selected key parameters, clause summaries, testing methods, and indicative certification/QCO metadata. The records are designed for discovery and demonstration; they are **not a complete reproduction of BIS standards** and do not constitute an official or automatically updated BIS register.
+The demonstration catalog is a local JSON file with **50 searchable entries across five domains**: 20 curated demonstration records and 30 additional BIS-sourced code/title discovery records. The curated 20 contain selected example clause summaries, test methods and illustrative screening fields; the added 30 are explicitly `catalogue_only`, have no populated clause summaries, set QCO status to unknown (`null`), and are excluded from clause-level readiness interpretation. All 50 are for discovery/demonstration, are **not a complete reproduction of BIS standards**, and do not constitute an official or automatically updated BIS register.
 
-Before operational use, each record should be checked by a qualified reviewer against the current BIS catalog, standard text and amendments, product scope, and applicable ministry notifications/QCOs. The data file itself carries this qualification and references the official BIS standard-search and compulsory-certification pages.
+Before operational use, each record should be checked by a qualified reviewer against the current BIS catalogue, standard text and amendments, product scope, and applicable ministry notifications/QCOs. Added titles were cross-checked against official BIS published-standard and product-manual/registration listings, but listing presence does not validate current scope or QCO applicability. The data file carries this qualification and references the BIS source pages.
 
 ## 7. API surface
 
@@ -151,13 +151,14 @@ A persistent relational database, authentication, long-term analysis history, an
 
 ## 9. Verification completed
 
-The current backend test suite contains five checks covering:
+The current backend test suite contains six checks covering:
 
-1. Catalog presence and unique IS codes.
-2. Leading retrieval results for representative steel-rebar and cable queries.
-3. Availability of both role views and a compliance matrix.
-4. Valid PDF report generation.
-5. Scoping a carbon-limit deviation to the chemistry-related clause.
+1. Exactly 50 unique catalog records, including 30 discovery-only entries without QCO claims or clause summaries.
+2. Retrieval of a new catalogue-only record without fabricating clause-audit findings.
+3. Leading retrieval results for representative steel-rebar and cable queries.
+4. Availability of both role views and a compliance matrix.
+5. Valid PDF report generation.
+6. Scoping a carbon-limit deviation to the chemistry-related clause. Separate frontend tests cover required bidder-profile fields, browser-local persistence, role validation, and the three added tender examples.
 
 The frontend production build has also been run successfully. These tests verify selected behaviors; they do not establish standards coverage, real-tender accuracy, or production readiness.
 
@@ -165,7 +166,7 @@ For SIH evaluation, the next useful validation is a reviewer-labelled test set o
 
 ## 10. Prototype limitations and safe-use controls
 
-- The corpus is small, illustrative, local, and manually maintained; no live BIS synchronization is implemented.
+- The corpus is small, illustrative, local, and manually maintained; no live BIS synchronization is implemented. Thirty discovery-only records are not clause-audited.
 - Retrieval is keyword/statistics-based and may miss synonyms, context, cross-references, or complex product scope.
 - Parameter extraction and compliance statuses are rule-based and can misread negation, units, tables, exceptions, or ambiguous sentences.
 - OCR, multilingual tender understanding, amendment-aware version resolution, and full-standard clause verification are not implemented.
@@ -187,7 +188,7 @@ Every result should be treated as a **screening aid**. Confirm applicable standa
 
 ## 12. SIH presentation summary
 
-> BIS.SPEC is an explainable procurement-screening prototype. It extracts a first set of technical signals from tender text, ranks likely standards with a transparent BM25 + TF-IDF + exact-match blend, and checks selected clause summaries using explicit rules. It then gives buyers and bidders different checklists and review views. The current demo uses a small local illustrative corpus and heuristic screening—it does not replace the official BIS source, expert judgment, or a legal compliance decision.
+> BIS.SPEC is an explainable procurement-screening prototype. It extracts a first set of technical signals from tender text, ranks likely standards with a transparent BM25 + TF-IDF + exact-match blend, and checks selected clause summaries using explicit rules. Its 50-entry directory includes 20 illustrative clause-screening records and 30 BIS-sourced discovery-only records without clause-level audit claims. Separate Officer and Bidder demo desks include a locally stored, self-reported bidder profile. It does not replace official BIS sources, expert judgment, identity controls, or legal compliance decisions.
 
 ## References
 

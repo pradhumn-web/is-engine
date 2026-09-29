@@ -1,6 +1,6 @@
 # BIS.SPEC — SIH procurement intelligence prototype
 
-A demo-ready React + FastAPI workbench for standards-based procurement screening. The entry screen lets a visitor choose a Buyer / Officer or Bidder / Contractor workspace, then opens the matching review desk with a representative Fe 500D tender and analysis ready to explore.
+A demo-ready React + FastAPI workbench for standards-based procurement screening. The entry screen lets a visitor choose a Buyer / Officer or Bidder / Contractor workspace. The bidder supplies a self-reported experience range and primary technical field for a same-browser Officer preview; the site does not verify identity or authority.
 
 ## Optional Render deployment setup — not published
 
@@ -10,12 +10,12 @@ To set it up, connect `pradhumn-web/is-engine` in Render and apply the Blueprint
 
 ## Demo flow
 
-1. Choose **Buyer / Officer** or **Bidder / Contractor** on the demo access screen; optionally add a display name.
-2. Review the preloaded Fe 500D metro viaduct tender or choose one of the four example scenarios.
+1. Choose **Buyer / Officer** or **Bidder / Contractor** on the demo access screen; add a display name. Bidders also enter years of experience and a main technical field.
+2. Review the preloaded Fe 500D metro viaduct tender or choose one of seven example scenarios, including paving blocks, solar water pumps and ICT power adaptors.
 3. Inspect extracted parameters and hybrid-ranked standard recommendations.
-4. Use **Change workspace** in the header to compare the officer’s tender and supplier-evidence review with the bidder’s readiness and compliance matrix.
+4. Use **Change workspace** in the header to compare the Officer review and the Bidder readiness desk. The Officer sees the self-reported demo bidder profile stored in this browser.
 5. Open clause comparison, filter conformance findings, and copy the amendment language.
-6. Visit the searchable 20-entry standards catalog or session activity page, then export the audit as PDF or JSON.
+6. Visit the searchable 50-entry standards catalog or session activity page. The Officer desk exposes the audit report export; the Bidder desk does not show this UI action.
 
 ## Start locally
 
@@ -61,7 +61,7 @@ Managed full-stack project checks: `pnpm check && pnpm test && pnpm build`.
 
 ## Prototype boundaries
 
-The 20-entry corpus and clause summaries are indicative reference/demo data, not an authoritative BIS register. Verify live editions, amendments, QCO notifications, CRS scope and tender applicability from official sources before procurement or legal reliance. Automated analysis is not engineering, legal or certification advice. The role picker is a **demo-only workspace selector**, not account authentication: it requests no password and does not verify identity, role, or procurement authority. Its display name/role is kept in local browser storage. Analytics and indexing are in-memory; scanned PDFs are not OCR'd. The preview is not a permanent public deployment. Free hosting may sleep when idle, and all data held only in process memory resets on restart or redeploy.
+The 50-entry corpus is illustrative. Twenty curated demo records contain clause summaries and demo screening rules; 30 additional BIS-sourced entries are catalogue-discovery records only. Those 30 have no populated clause summaries or verified QCO applicability, and are deliberately excluded from clause-level scoring. None of the corpus is an authoritative BIS register. Check current editions, amendments, QCO notifications, CRS scope and tender applicability against official sources before procurement or legal reliance. Automated analysis is not engineering, legal or certification advice. The role picker is a **demo-only workspace selector**, not account authentication: it requests no password and does not verify identity, role, or procurement authority. Bidder name, experience and field are self-reported and stored locally in this browser; they are not verified or transmitted to the analysis service. The export control is hidden in the bidder interface for role clarity—not secured access control. Analytics and indexing are in-memory; scanned PDFs are not OCR'd. The preview is not a permanent public deployment. Free hosting may sleep when idle, and all data held only in process memory resets on restart or redeploy.
 
 ## SIH submission guide
 

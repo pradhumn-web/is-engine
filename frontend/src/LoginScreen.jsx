@@ -16,13 +16,25 @@ const roles = [
   },
 ];
 
-export default function LoginScreen({ onSignIn }) {
-  const [role, setRole] = useState('officer');
+const technicalFields = [
+  'Civil & Construction',
+  'Electrical & Cables',
+  'Electronics & IT',
+  'Mechanical & HVAC',
+  'Textiles & PPE',
+  'Quality / Testing',
+  'Other',
+];
+
+export default function LoginScreen({ onSignIn, initialRole = 'officer' }) {
+  const [role, setRole] = useState(initialRole === 'contractor' ? 'contractor' : 'officer');
   const [name, setName] = useState('');
+  const [experienceYears, setExperienceYears] = useState('');
+  const [technicalField, setTechnicalField] = useState('');
 
   function submit(event) {
     event.preventDefault();
-    onSignIn(role, name);
+    onSignIn(role, name, { experienceYears, technicalField });
   }
 
   return (
@@ -43,7 +55,7 @@ export default function LoginScreen({ onSignIn }) {
           <div className="login-points">
             <span><Check size={15} /> Start from a sample or your own tender</span>
             <span><Check size={15} /> See buyer and bidder guidance separately</span>
-            <span><Check size={15} /> Export a screening summary for review</span>
+            <span><Check size={15} /> Explore 50 reference-standard entries</span>
           </div>
           <div className="login-footnote"><ShieldCheck size={15} /> Screening support for a demo; confirm requirements against official notices.</div>
         </section>
@@ -81,6 +93,36 @@ export default function LoginScreen({ onSignIn }) {
               onChange={event => setName(event.target.value)}
               placeholder={role === 'officer' ? 'e.g. Asha Kumar' : 'e.g. Ravi Patel'}
             />
+            {role === 'contractor' && <div className="bidder-profile-fields">
+              <div className="bidder-profile-heading"><b>Bidder profile</b><span>Shown in the Officer desk on this browser</span></div>
+              <label className="login-name-label" htmlFor="bidder-experience">Relevant experience <span>years</span></label>
+              <input
+                id="bidder-experience"
+                className="login-name-input"
+                type="number"
+                name="experienceYears"
+                min="0"
+                max="60"
+                step="1"
+                required
+                value={experienceYears}
+                onChange={event => setExperienceYears(event.target.value)}
+                placeholder="e.g. 8"
+              />
+              <label className="login-name-label" htmlFor="bidder-technical-field">Main technical field <span>required</span></label>
+              <select
+                id="bidder-technical-field"
+                className="login-name-input bidder-field-select"
+                name="technicalField"
+                required
+                value={technicalField}
+                onChange={event => setTechnicalField(event.target.value)}
+              >
+                <option value="" disabled>Select your primary field</option>
+                {technicalFields.map(field => <option value={field} key={field}>{field}</option>)}
+              </select>
+              <p className="bidder-profile-note">Demo profile only. It stays in this browser and is not independently verified.</p>
+            </div>}
             <button className="primary-btn login-submit" type="submit">
               Continue to {role === 'officer' ? 'Officer desk' : 'Bidder desk'} <ArrowRight size={15} />
             </button>

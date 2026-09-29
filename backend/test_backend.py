@@ -2,9 +2,20 @@ from app.main import DATA, ENGINE
 from app.pdf_generator import generate_report
 
 
-def test_catalog_loaded_with_at_least_15_standards():
-    assert len(DATA["standards"]) >= 15
-    assert len({s["is_code"] for s in DATA["standards"]}) == len(DATA["standards"])
+def test_catalog_loaded_with_exactly_50_unique_standards():
+    assert len(DATA["standards"]) == 50
+    assert len({s["is_code"].casefold() for s in DATA["standards"]}) == 50
+    additions = [s for s in DATA["standards"] if s.get("catalogue_only")]
+    assert len(additions) == 30
+    assert all(s["qco_mandatory"] is None and not s["mandatory_clauses"] for s in additions)
+
+
+def test_catalogue_only_standard_is_discoverable_without_fake_clause_audit():
+    result = ENGINE.analyze("Supply precast concrete paving blocks, product IS 15658:2021.", top_k=1, role="contractor")
+    standard = result["primary_recommendation"]["standard"]
+    assert standard["is_code"] == "IS 15658:2021"
+    assert standard["catalogue_only"] is True
+    assert result["contractor_view"]["compliance_matrix"] == []
 
 
 def test_hybrid_search_matches_rebar_and_cable_standards():

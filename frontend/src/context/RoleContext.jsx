@@ -1,15 +1,21 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { createDemoSession, readDemoSession, SESSION_STORAGE_KEY } from './roleSession.js';
+import { BIDDER_PROFILE_STORAGE_KEY, createDemoSession, readBidderProfile, readDemoSession, SESSION_STORAGE_KEY } from './roleSession.js';
 
 const RoleContext = createContext(null);
 
 export function RoleProvider({ children }) {
   const [session, setSession] = useState(() => readDemoSession());
+  const [lastBidderProfile, setLastBidderProfile] = useState(() => readBidderProfile());
 
   useEffect(() => {
     try {
       if (session) localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
       else localStorage.removeItem(SESSION_STORAGE_KEY);
+      if (session?.role === 'contractor' && session.bidderProfile?.technicalField && session.bidderProfile?.experienceYears !== null) {
+        const profile = { ...session.bidderProfile, displayName: session.displayName };
+        localStorage.setItem(BIDDER_PROFILE_STORAGE_KEY, JSON.stringify(profile));
+        setLastBidderProfile(profile);
+      }
     } catch { /* Demo mode remains usable when storage is unavailable. */ }
   }, [session]);
 
@@ -20,9 +26,10 @@ export function RoleProvider({ children }) {
     isAuthenticated: Boolean(session),
     isOfficer: session?.role === 'officer',
     isContractor: session?.role === 'contractor',
-    signIn: (role, displayName) => setSession(createDemoSession(role, displayName)),
+    bidderProfile: session?.role === 'contractor' ? session.bidderProfile || null : lastBidderProfile,
+    signIn: (role, displayName, bidderProfile) => setSession(createDemoSession(role, displayName, bidderProfile)),
     signOut: () => setSession(null),
-  }), [session]);
+  }), [session, lastBidderProfile]);
 
   return <RoleContext.Provider value={value}>{children}</RoleContext.Provider>;
 }
