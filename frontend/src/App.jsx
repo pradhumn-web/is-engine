@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Activity, AlertTriangle, ArrowDownToLine, ArrowRight, BarChart3, BookOpen,
   BriefcaseBusiness, Building2, Check, ChevronDown, Clipboard, Copy, Download,
-  FileCheck2, FileText, Filter, Layers3, Search, ShieldCheck, Upload, X,
+  FileCheck2, FileText, Filter, Layers3, Menu, Search, ShieldCheck, Upload, X,
 } from 'lucide-react';
 import { useRole } from './context/RoleContext.jsx';
+import LoginScreen from './LoginScreen.jsx';
 
 const EXAMPLES = [
   { name: 'TMT Rebars Fe 500D', meta: 'CIVIL  /  METRO VIADUCT', domain: 'Civil & Construction', text: 'Supply Fe 500D TMT rebars for metro viaduct foundations, minimum yield strength 500 MPa, elongation not less than 16%. Steel shall comply with IS 1786:2008. Submit heat-wise mill test certificate, carbon equivalent and NABL laboratory tensile and bend reports. BIS ISI licence CM/L shall be valid for the offered grade and manufacturing location.' },
@@ -22,7 +23,12 @@ const copyText = async (text) => { try { await navigator.clipboard.writeText(tex
 function Tag({ children, tone = '' }) { return <span className={`tag ${tone}`}>{children}</span>; }
 
 function App() {
-  const { userRole, toggleRole, isOfficer } = useRole();
+  const { isAuthenticated, signIn } = useRole();
+  return isAuthenticated ? <Workspace /> : <LoginScreen onSignIn={signIn} />;
+}
+
+function Workspace() {
+  const { userRole, isOfficer, session, signOut } = useRole();
   const [tab, setTab] = useState('analyze');
   const [text, setText] = useState(EXAMPLES[0].text);
   const [domain, setDomain] = useState('All domains');
@@ -35,6 +41,7 @@ function App() {
   const [catalog, setCatalog] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [catalogLoading, setCatalogLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const showcaseStarted = useRef(false);
   const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   const selected = result?.primary_recommendation;
@@ -70,21 +77,56 @@ function App() {
     api('/api/v1/analytics').then(r => r.json()).then(setAnalytics).catch(e => setError(e.message));
   }, [tab, result]);
 
-  const nav = [['analyze', 'Review tender', Layers3], ['analytics', 'Activity summary', BarChart3], ['directory', 'Standards', BookOpen]];
+  useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    const root = document.querySelector('.app-shell');
+    if (!root) return;
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in-view');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
+    const items = root.querySelectorAll('[data-reveal]');
+    items.forEach((item, index) => {
+      item.classList.add('scroll-reveal');
+      item.style.setProperty('--reveal-delay', `${Math.min(index * 35, 175)}ms`);
+      observer.observe(item);
+    });
+    return () => observer.disconnect();
+  }, [tab, result]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const closeOnEscape = event => { if (event.key === 'Escape') setMobileMenuOpen(false); };
+    const closeOnOutsideTap = event => { if (!event.target.closest('.topbar')) setMobileMenuOpen(false); };
+    document.addEventListener('keydown', closeOnEscape);
+    document.addEventListener('pointerdown', closeOnOutsideTap);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      document.removeEventListener('pointerdown', closeOnOutsideTap);
+    };
+  }, [mobileMenuOpen]);
+
+  const nav = isOfficer
+    ? [['analyze', 'Tender desk', Layers3], ['analytics', 'Review activity', BarChart3], ['directory', 'Standards library', BookOpen]]
+    : [['analyze', 'Bid readiness', FileCheck2], ['analytics', 'Bid activity', BarChart3], ['directory', 'Standards library', BookOpen]];
   return <div className="app-shell">
     <header className="topbar">
       <div className="brand"><div className="brand-mark">[IS]</div><div><strong>BIS.SPEC</strong><span>STANDARDS INTELLIGENCE</span></div><Tag tone="soft">SIH PROTOTYPE</Tag></div>
-      <nav className="main-nav">{nav.map(([id, label, Icon]) => <button key={id} className={`nav-item ${tab === id ? 'active' : ''}`} onClick={() => { setTab(id); setError(''); }}><Icon size={15} />{label}</button>)}</nav>
-      <div className="top-actions"><div className="ready"><i />CATALOG READY</div><button className={`role-switch ${userRole}`} onClick={toggleRole} title="Toggle viewing mode">{isOfficer ? <Building2 size={15} /> : <BriefcaseBusiness size={15} />}<span>{isOfficer ? 'BUYER / OFFICER' : 'BIDDER / CONTRACTOR'}</span><ChevronDown size={13} /></button><a className="docs-link guide-link" href="/sih-user-guide.html">GUIDE ↗</a><a className="docs-link" href="/docs" target="_blank" rel="noreferrer">API DOCS ↗</a></div>
+      <nav className="main-nav" aria-label="Workspace sections">{nav.map(([id, label, Icon]) => <button key={id} className={`nav-item ${tab === id ? 'active' : ''}`} aria-current={tab === id ? 'page' : undefined} onClick={() => { setTab(id); setError(''); }}><Icon size={15} />{label}</button>)}</nav>
+      <div className="top-actions"><div className="ready"><i />DEMO SESSION</div><button className={`role-switch ${userRole}`} onClick={signOut} title="Change workspace"><span className="role-label">{isOfficer ? 'OFFICER' : 'BIDDER'}</span><span className="role-name">{session.displayName}</span><ChevronDown size={13} /></button><a className="docs-link guide-link" href="/sih-user-guide.html">GUIDE ↗</a><a className="docs-link" href="/docs" target="_blank" rel="noreferrer">API DOCS ↗</a><button className="mobile-menu-toggle" aria-expanded={mobileMenuOpen} aria-controls="mobile-sections-menu" onClick={() => setMobileMenuOpen(open => !open)}>{mobileMenuOpen ? <X size={16} /> : <Menu size={16} />}<span>Sections</span><ChevronDown size={13} /></button></div>
+      {mobileMenuOpen && <nav className="mobile-menu-panel" id="mobile-sections-menu" aria-label="Phone navigation"><div className="mobile-menu-heading">{isOfficer ? 'Officer workspace' : 'Bidder workspace'}</div>{nav.map(([id, label, Icon]) => <button key={id} className={tab === id ? 'active' : ''} onClick={() => { setTab(id); setError(''); setMobileMenuOpen(false); }}><Icon size={16} /><span>{label}</span>{tab === id && <Check size={14} />}</button>)}<a href="/sih-user-guide.html"><BookOpen size={16} /><span>User guide</span><ArrowRight size={14} /></a><a href="/docs" target="_blank" rel="noreferrer"><FileText size={16} /><span>API documentation</span><ArrowRight size={14} /></a><button className="mobile-change-role" onClick={() => { setMobileMenuOpen(false); signOut(); }}><Building2 size={16} /><span>Change workspace</span><ArrowRight size={14} /></button></nav>}
     </header>
     <main className="page-wrap">
-      <div className="page-heading"><div><div className="eyebrow">TENDER REVIEW · SIH PROJECT</div><h1>{tab === 'analyze' ? 'Specification workbench' : tab === 'analytics' ? 'Compliance analytics' : 'Standards directory'}</h1><p>{tab === 'analyze' ? 'Map tender language to standards. Surface evidence gaps before bid or publication.' : tab === 'analytics' ? 'A live view of standards coverage, citations and observed non-conformance.' : 'Search the embedded reference catalog and inspect clause-level summaries.'}</p></div><div className="header-stat"><div className="stat-icon"><ShieldCheck size={17} /></div><div><b>20</b><span>REFERENCE STANDARDS</span></div></div></div>
+      <div className="page-heading" data-reveal><div><div className="eyebrow">{isOfficer ? 'BUYER WORKSPACE · TENDER REVIEW' : 'BIDDER WORKSPACE · BID PREPARATION'}</div><h1>{tab === 'analyze' ? (isOfficer ? 'Tender review desk' : 'Bid readiness desk') : tab === 'analytics' ? (isOfficer ? 'Review activity' : 'Bid activity') : 'Standards library'}</h1><p>{tab === 'analyze' ? (isOfficer ? 'Check requirements before publication and prepare a clearer, evidence-led tender.' : 'See what your bid should demonstrate and which evidence may still be missing.') : tab === 'analytics' ? 'A session summary of standards coverage, matches and observed gaps.' : 'Search the reference catalog by standard, product or domain.'}</p></div><div className="header-stat"><div className="stat-icon"><ShieldCheck size={17} /></div><div><b>20</b><span>REFERENCE STANDARDS</span></div></div></div>
       {error && <div className="error-banner"><AlertTriangle size={16} />{error}<button onClick={() => setError('')}><X size={15} /></button></div>}
       {tab === 'analyze' && <>
-        <section className="demo-banner"><div className="demo-mark"><Activity size={16} /></div><div><b>EXAMPLE TENDER · REBAR SUPPLY</b><span>A rebar example is ready. Edit it, choose another example, or add a tender file.</span></div><Tag tone="green">DEMO READY</Tag></section>
-        <section className="ingest-grid">
+        <section className={`demo-banner role-banner ${userRole}`} data-reveal><div className="demo-mark">{isOfficer ? <Building2 size={16} /> : <BriefcaseBusiness size={16} />}</div><div><b>{isOfficer ? 'OFFICER DESK · TENDER QUALITY CHECK' : 'BIDDER DESK · EVIDENCE READINESS'}</b><span>{isOfficer ? 'Review the draft clauses, standards references and supplier evidence checklist.' : 'Check the sample offer against the cited standard and prepare your supporting documents.'}</span></div><Tag tone="green">DEMO MODE</Tag></section>
+        <section className="ingest-grid" data-reveal>
           <div className="panel ingest-panel">
-            <div className="panel-top"><div><div className="eyebrow">01 / TENDER INPUT</div><h2>What are you buying?</h2></div><div className="mode-chip"><FileText size={14} /> TENDER INPUT</div></div>
+            <div className="panel-top"><div><div className="eyebrow">01 / TENDER INPUT</div><h2>What are you buying?</h2></div><div className="mode-chip"><FileText size={14} /> {isOfficer ? 'DRAFT REVIEW' : 'BID INPUT'}</div></div>
             <div className="quick-label">START WITH AN EXAMPLE</div>
             <div className="example-grid">{EXAMPLES.map((example, i) => <button className={`example-card ${text === example.text ? 'selected-example' : ''}`} key={example.name} onClick={() => { setText(example.text); setFile(null); setDomain('All domains'); setResult(null); }}><span className="example-num">0{i + 1}</span><span><b>{example.name}</b><small>{example.meta}</small></span><ArrowRight size={14} /></button>)}</div>
             <div className="input-tools"><span>TENDER TEXT</span><label className="file-pick"><Upload size={14} />{file ? file.name : 'Upload PDF / DOCX / TXT'}<input type="file" accept=".pdf,.docx,.txt" onChange={e => { setFile(e.target.files?.[0] || null); if (e.target.files?.[0]) { setText(''); setResult(null); } }} /></label></div>
@@ -94,17 +136,17 @@ function App() {
           </div>
           <aside className="panel process-panel"><div className="eyebrow">REVIEW PROCESS</div><h3>How the review works</h3><div className="flow-step done"><span className="flow-icon"><Check size={14} /></span><div><b>Document intake</b><small>PDF · DOCX · Plain text</small></div><Tag tone="green">READY</Tag></div><div className="flow-step done"><span className="flow-icon"><Activity size={14} /></span><div><b>Hybrid retrieval</b><small>Exact code + keyword match</small></div><Tag tone="green">LIVE</Tag></div><div className={`flow-step ${result ? 'done' : 'pending'}`}><span className="flow-icon">03</span><div><b>Clause comparison</b><small>Alignment · evidence · deviation</small></div><Tag tone={result ? 'green' : ''}>{result ? 'DONE' : 'NEXT'}</Tag></div><div className="process-note"><AlertTriangle size={15} /><span>Screening aid only. Confirm QCO coverage and current editions against official BIS and ministry notifications.</span></div><div className="process-foot"><span>REFERENCE CATALOG</span><b>20 <small>STANDARDS</small></b></div></aside>
         </section>
-        {result && <section className="results-section">
+        {result && <section className="results-section" data-reveal>
           <div className="section-title"><div><div className="eyebrow">02 / RESULTS</div><h2>Recommended standards</h2></div><button className="outline-btn" onClick={() => setModal('report')}><FileCheck2 size={14} /> Audit report</button></div>
           <ParameterTags data={result.extracted_parameters} />
           <div className="results-layout"><div className="recommendation-list">{recommendations.map((hit, i) => <StandardCard key={hit.standard.is_code} hit={hit} index={i} onOpen={() => setModal({ type: 'clauses', hit })} />)}</div><div className="view-panel panel">{isOfficer ? <OfficerView data={result.officer_view} onOpen={() => setModal({ type: 'diff', hit: selected })} /> : <ContractorView data={result.contractor_view} onOpen={() => setModal({ type: 'diff', hit: selected })} />}</div></div>
           <div className="notice-line"><ShieldCheck size={14} />{result.notice}</div>
         </section>}
       </>}
-      {tab === 'analytics' && <Analytics data={analytics} />}
-      {tab === 'directory' && <section className="panel directory-panel"><div className="directory-head"><div><div className="eyebrow">REFERENCE CATALOG / 20 ENTRIES</div><h2>Indian Standards directory</h2></div><div className="search-box"><Search size={15} /><input placeholder="Search code, product, keyword…" value={search} onChange={e => setSearch(e.target.value)} /></div></div><div className="domain-pills">{DOMAINS.slice(1).map(d => <button key={d} className={domain === d ? 'selected' : ''} onClick={() => setDomain(domain === d ? 'All domains' : d)}>{d}</button>)}</div><Directory data={catalog.filter(s => domain === 'All domains' || s.domain === domain)} loading={catalogLoading} /></section>}
+      {tab === 'analytics' && <div data-reveal><Analytics data={analytics} /></div>}
+      {tab === 'directory' && <section className="panel directory-panel" data-reveal><div className="directory-head"><div><div className="eyebrow">REFERENCE CATALOG / 20 ENTRIES</div><h2>Indian Standards directory</h2></div><div className="search-box"><Search size={15} /><input placeholder="Search code, product, keyword…" value={search} onChange={e => setSearch(e.target.value)} /></div></div><div className="domain-pills">{DOMAINS.slice(1).map(d => <button key={d} className={domain === d ? 'selected' : ''} onClick={() => setDomain(domain === d ? 'All domains' : d)}>{d}</button>)}</div><Directory data={catalog.filter(s => domain === 'All domains' || s.domain === domain)} loading={catalogLoading} /></section>}
     </main>
-    <footer><span>© BIS.SPEC / PROCUREMENT INTELLIGENCE</span><span>DEMO REFERENCES — CHECK OFFICIAL BIS NOTIFICATIONS <a href="https://www.bis.gov.in/" target="_blank" rel="noreferrer">BIS ↗</a></span></footer>
+    <footer data-reveal><span>© BIS.SPEC / PROCUREMENT INTELLIGENCE</span><span>DEMO REFERENCES — CHECK OFFICIAL BIS NOTIFICATIONS <a href="https://www.bis.gov.in/" target="_blank" rel="noreferrer">BIS ↗</a></span></footer>
     {modal && <Modal data={modal} result={result} onClose={() => setModal(null)} />}
   </div>;
 }
@@ -116,7 +158,7 @@ function ParameterTags({ data = {} }) {
 function StandardCard({ hit, index, onOpen }) {
   const standard = hit.standard; const counts = hit.conformance_counts || {};
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
-  return <article className={`standard-card ${index === 0 ? 'primary' : ''}`}>
+  return <article className={`standard-card ${index === 0 ? 'primary' : ''}`} data-reveal>
     <div className="card-kicker">{index === 0 ? 'BEST MATCH' : 'ALTERNATIVE MATCH'}<span className="match-badge">[{hit.confidence}% MATCH]</span></div>
     <div className="standard-main"><div><div className="standard-code">{standard.is_code}</div><h3>{standard.title}</h3><p>{standard.scope}</p></div><div className="compliance-pill"><i />{hit.tier} CONFIDENCE</div></div>
     <div className="card-meta"><Tag>{standard.domain}</Tag>{standard.qco_mandatory && <Tag tone="amber">□ QCO MANDATORY</Tag>}<Tag tone="soft">{standard.certification_mark}</Tag></div>
@@ -145,18 +187,18 @@ function ContractorView({ data, onOpen }) {
 function Analytics({ data }) {
   if (!data) return <div className="loading-state"><span className="spinner dark" /> Loading analytics…</div>;
   const domains = Object.entries(data.domain_distribution || {}); const max = Math.max(1, ...domains.map(x => x[1]));
-  return <><section className="kpi-grid"><Kpi label="Standards indexed" value={data.standards_count || 20} note="Across five domains" icon={BookOpen} /><Kpi label="Analyses this session" value={data.analyses_count || 0} note="In-memory session metrics" icon={Activity} /><Kpi label="Core domains" value={domains.length} note="Civil · Electrical · IT · HVAC · PPE" icon={Layers3} /><Kpi label="Audit posture" value="LIVE" note="Evidence-first screening" icon={ShieldCheck} /></section>
+  return <><section className="kpi-grid"><Kpi label="Standards in catalog" value={data.standards_count || 20} note="Across five domains" icon={BookOpen} /><Kpi label="Analyses this session" value={data.analyses_count || 0} note="In-memory session metrics" icon={Activity} /><Kpi label="Core domains" value={domains.length} note="Civil · Electrical · IT · HVAC · PPE" icon={Layers3} /><Kpi label="Audit posture" value="LIVE" note="Evidence-first screening" icon={ShieldCheck} /></section>
     <section className="analytics-grid"><div className="panel chart-panel"><div className="eyebrow">01 / COVERAGE</div><h2>Standards by domain</h2>{domains.map(([name, value]) => <div className="bar-row" key={name}><div><span>{name}</span><b>{value}</b></div><i><em style={{ width: `${value / max * 100}%` }} /></i></div>)}</div>
       <div className="panel chart-panel"><div className="eyebrow">02 / CITATION SIGNAL</div><h2>Frequently matched standards</h2>{data.frequently_cited_standards?.length ? data.frequently_cited_standards.map(x => <div className="rank-row" key={x.is_code}><span>{x.is_code}</span><b>{x.count}</b></div>) : <Empty text="Analyze a tender to populate citation volume." />}</div>
       <div className="panel chart-panel"><div className="eyebrow">03 / NON-CONFORMANCE</div><h2>Prevalent gaps</h2>{data.prevalent_nonconformances?.length ? data.prevalent_nonconformances.map(x => <div className="rank-row" key={x.parameter}><span>{x.parameter}</span><b>{x.count}</b></div>) : <Empty text="Run an analysis to identify recurring gaps." />}</div></section></>;
 }
-function Kpi({ label, value, note, icon: Icon }) { return <div className="panel kpi"><div className="kpi-icon"><Icon size={16} /></div><span>{label}</span><strong>{value}</strong><small>{note}</small></div>; }
+function Kpi({ label, value, note, icon: Icon }) { return <div className="panel kpi" data-reveal><div className="kpi-icon"><Icon size={16} /></div><span>{label}</span><strong>{value}</strong><small>{note}</small></div>; }
 function Empty({ text }) { return <div className="empty-state"><Activity size={17} /><span>{text}</span></div>; }
 function Directory({ data, loading }) {
   const [open, setOpen] = useState('');
   if (loading) return <div className="loading-state"><span className="spinner dark" /> Loading directory…</div>;
   if (!data.length) return <Empty text="No standards match this filter." />;
-  return <div className="catalog-list">{data.map(standard => <article className="catalog-item" key={standard.is_code}><button onClick={() => setOpen(open === standard.is_code ? '' : standard.is_code)}><span className="catalog-code">{standard.is_code}</span><span className="catalog-name"><b>{standard.title}</b><small>{standard.domain} · {standard.qco_mandatory ? 'QCO FLAGGED' : 'NO QCO FLAG IN THIS CORPUS'}</small></span><span className="catalog-arrow">{open === standard.is_code ? '−' : '+'}</span></button>
+  return <div className="catalog-list">{data.map(standard => <article className="catalog-item" key={standard.is_code} data-reveal><button onClick={() => setOpen(open === standard.is_code ? '' : standard.is_code)}><span className="catalog-code">{standard.is_code}</span><span className="catalog-name"><b>{standard.title}</b><small>{standard.domain} · {standard.qco_mandatory ? 'QCO FLAGGED' : 'NO QCO FLAG IN THIS CORPUS'}</small></span><span className="catalog-arrow">{open === standard.is_code ? '−' : '+'}</span></button>
     {open === standard.is_code && <div className="catalog-detail"><p>{standard.scope}</p><div className="parameter-list">{Object.entries(standard.key_parameters || {}).map(([key, value]) => <span key={key}><small>{key.replaceAll('_', ' ')}</small><b>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</b></span>)}</div><div className="clause-grid">{standard.mandatory_clauses.map(clause => <div key={clause.clause_no}><b>{clause.clause_no} · {clause.title}</b><p>{clause.requirement}</p><small>METHOD · {clause.testing_method}</small></div>)}</div></div>}</article>)}</div>;
 }
 function Modal({ data, result, onClose }) {

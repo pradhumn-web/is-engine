@@ -1,21 +1,21 @@
 # BIS.SPEC — SIH procurement intelligence prototype
 
-A demo-ready React + FastAPI workbench for standards-based procurement screening. The landing screen loads a representative Fe 500D metro-rebar tender and runs the analysis automatically, so a live showcase begins with extracted engineering signals, recommended standards and an officer view already populated.
+A demo-ready React + FastAPI workbench for standards-based procurement screening. The entry screen lets a visitor choose a Buyer / Officer or Bidder / Contractor workspace, then opens the matching review desk with a representative Fe 500D tender and analysis ready to explore.
 
-## Permanent demo deployment
+## Optional Render deployment setup — not published
 
-The production service is defined by `render.yaml` and the root `Dockerfile`. It builds the React UI and serves it with the FastAPI API from the same origin. Once the service is created from the Blueprint, Render provides its shareable HTTPS URL; the API docs are available at `/docs` and the SIH guide at `/sih-user-guide.html`.
+`render.yaml` and the root `Dockerfile` prepare one optional deployment path. **The repository commit and Manus preview do not create a live Render service.** This path requires a Render account and a deliberate Blueprint setup. Once created, the service builds the React UI and FastAPI API from the same origin; Render provides a shareable HTTPS URL, with API docs at `/docs` and the SIH guide at `/sih-user-guide.html`.
 
 To set it up, connect `pradhumn-web/is-engine` in Render and apply the Blueprint. Subsequent pushes to `main` trigger deployments automatically. The free demo service may sleep after 15 minutes of inactivity, making its first request after sleep take about a minute. Do not rely on its local filesystem or in-memory analytics for persistent data.
 
 ## Demo flow
 
-1. Review the preloaded Fe 500D metro viaduct tender or choose one of the four example scenarios.
-2. Inspect extracted parameters and hybrid-rank standard recommendations.
-3. Toggle **Buyer / Officer** and **Bidder / Contractor** modes to compare tender drafting and qualification guidance with bid readiness and the clause matrix.
-4. Open clause comparison, filter conformance findings, and copy the amendment language.
-5. Visit the searchable 20-entry standards catalog or session analytics dashboard.
-6. Export the audit as PDF or JSON.
+1. Choose **Buyer / Officer** or **Bidder / Contractor** on the demo access screen; optionally add a display name.
+2. Review the preloaded Fe 500D metro viaduct tender or choose one of the four example scenarios.
+3. Inspect extracted parameters and hybrid-ranked standard recommendations.
+4. Use **Change workspace** in the header to compare the officer’s tender and supplier-evidence review with the bidder’s readiness and compliance matrix.
+5. Open clause comparison, filter conformance findings, and copy the amendment language.
+6. Visit the searchable 20-entry standards catalog or session activity page, then export the audit as PDF or JSON.
 
 ## Start locally
 
@@ -47,6 +47,8 @@ cd ../frontend
 npm run build
 ```
 
+Managed full-stack project checks: `pnpm check && pnpm test && pnpm build`.
+
 ## API routes
 
 - `GET /health`
@@ -59,7 +61,7 @@ npm run build
 
 ## Prototype boundaries
 
-The 20-entry corpus and clause summaries are indicative reference/demo data, not an authoritative BIS register. Verify live editions, amendments, QCO notifications, CRS scope and tender applicability from official sources before procurement or legal reliance. Automated analysis is not engineering, legal or certification advice. Analytics and indexing are in-memory; scanned PDFs are not OCR'd. The demo has no user authentication and its shareable hosting URL is public. Free hosting may sleep when idle, and all data held only in process memory resets on restart or redeploy.
+The 20-entry corpus and clause summaries are indicative reference/demo data, not an authoritative BIS register. Verify live editions, amendments, QCO notifications, CRS scope and tender applicability from official sources before procurement or legal reliance. Automated analysis is not engineering, legal or certification advice. The role picker is a **demo-only workspace selector**, not account authentication: it requests no password and does not verify identity, role, or procurement authority. Its display name/role is kept in local browser storage. Analytics and indexing are in-memory; scanned PDFs are not OCR'd. The preview is not a permanent public deployment. Free hosting may sleep when idle, and all data held only in process memory resets on restart or redeploy.
 
 ## SIH submission guide
 
