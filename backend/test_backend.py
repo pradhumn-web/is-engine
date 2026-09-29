@@ -32,6 +32,18 @@ def test_analysis_returns_both_role_views():
     assert "compliance_matrix" in result["contractor_view"]
 
 
+def test_explicit_absence_of_test_evidence_is_not_scored_as_aligned():
+    text = (
+        "Fe 500D reinforcement bars shall conform to IS 1786:2008. "
+        "Tensile and bend evidence: no heat-wise tensile test report or bend result is attached. "
+        "Heat chemistry: no carbon-equivalent analysis or mill test certificate is provided."
+    )
+    result = ENGINE.analyze(text, top_k=1, role="contractor")
+    rows = result["primary_recommendation"]["compliance_matrix"]
+    assert [row["status"] for row in rows] == ["Missing", "Missing"]
+    assert result["contractor_view"]["bid_readiness_score"] == 0
+
+
 def test_pdf_report_is_valid_binary_payload_over_one_kilobyte():
     result = ENGINE.analyze("Supply Fe 500D rebars per IS 1786:2008. Attach BIS licence and NABL test reports.", top_k=2)
     result["generated_at"] = "2026-09-26T00:00:00+00:00"
@@ -46,3 +58,35 @@ def test_carbon_limit_deviation_is_scoped_to_chemistry_clause():
     rows = result["primary_recommendation"]["compliance_matrix"]
     deviated = [row["parameter"] for row in rows if row["status"] == "Deviated"]
     assert deviated == ["Heat chemistry and weldability"]
+
+
+def test_both_role_specific_demo_pdfs_parse_and_return_role_views():
+    client = TestClient(app)
+    fixture_dir = Path(__file__).parent / "test_fixtures"
+    samples = [
+        ("officer-demo-tender.pdf", "officer", "officer-tender.pdf"),
+        ("bidder-demo-offer.pdf", "contractor", "bidder-offer.pdf"),
+    ]
+    for fixture, role, upload_name in samples:
+        with (fixture_dir / fixture).open("rb") as pdf:
+            response = client.post(
+                "/api/v1/analyze-file",
+                data={"role": role},
+                files={"file": (upload_name, pdf, "application/pdf")},
+            )
+        assert response.status_code == 200, response.text
+        result = response.json()
+        assert result["requested_role"] == role
+        assert result["source_filename"] == upload_name
+        assert result["primary_recommendation"]["standard"]["is_code"] == "IS 1786:2008"
+        assert "Fe 500D" in result["extracted_parameters"]["steel_grades"]
+        assert result["officer_view"]["draft_tender_clauses"]
+        assert result["contractor_view"]["compliance_matrix"]
+        if role == "contractor":
+            assert result["contractor_view"]["bid_readiness_score"] < 100
+            assert any(row["status"] in {"Missing", "Partial"} for row in result["contractor_view"]["compliance_matrix"])
+from pathlib import Path
+
+from fastapi.testclient import TestClient
+
+from app.main import DATA, ENGINE, app

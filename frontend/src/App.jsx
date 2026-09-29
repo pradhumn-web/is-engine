@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Activity, AlertTriangle, ArrowDownToLine, ArrowRight, BarChart3, BookOpen,
   BriefcaseBusiness, Building2, CalendarDays, Check, ChevronDown, Clipboard, ClipboardCheck, Clock3, Copy, Download,
@@ -23,6 +23,10 @@ export const DEMO_PROJECTS = [
   { id: 'healthcare-hvac', title: 'Healthcare ventilation and cooling', domain: 'Mechanical & HVAC', location: 'Illustrative public healthcare sites', horizon: 'Illustrative · no official date', exampleName: '1.5 TR Room ACs', illustrative: true, scope: 'Scenario covering HVAC equipment, ventilation components, controls and performance commissioning.', preparation: ['Prepare performance data at the specified operating conditions.', 'Document filters, controls, service intervals and warranty.', 'Check energy-label and product-scope requirements for each item.'] },
   { id: 'digital-learning', title: 'Digital learning and network equipment', domain: 'Electronics & IT', location: 'Illustrative school and training sites', horizon: 'Illustrative · no official date', exampleName: 'ICT Equipment Power Adaptors', illustrative: true, scope: 'Scenario covering computing devices, displays, connectivity and power accessories for shared learning spaces.', preparation: ['List exact models, interfaces and included accessories.', 'Collect product-safety and applicable registration evidence.', 'Prepare support, replacement and warranty commitments.'] },
 ];
+export const DEMO_PDF_DOWNLOADS = [
+  { role: 'Officer', name: 'Officer sample tender', filename: 'BIS-SPEC-Officer-Demo-Tender.pdf', url: '/manus-storage/officer-tender_6732afe8.pdf', detail: 'A tender draft with explicit Fe 500D requirements, acceptance evidence and officer review prompts.' },
+  { role: 'Bidder', name: 'Bidder sample technical offer', filename: 'BIS-SPEC-Bidder-Demo-Offer.pdf', url: '/manus-storage/bidder-offer_468884d0.pdf', detail: 'A deliberately incomplete Fe 500D offer to demonstrate missing evidence and readiness gaps.' },
+];
 const DOMAINS = ['All domains', 'Civil & Construction', 'Electrical & Cables', 'Electronics & IT', 'Mechanical & HVAC', 'Textiles & PPE'];
 const api = async (path, options) => {
   const response = await fetch(path, options);
@@ -38,7 +42,7 @@ function App() {
 }
 
 function Workspace() {
-  const { userRole, isOfficer, session, bidderProfile, bidderHistory, bidderHistoryStats, signOut } = useRole();
+  const { userRole, isOfficer, session, bidderProfile, bidderHistory, bidderHistoryStats, uploadHistory, uploadHistoryStats, recordUpload, signOut } = useRole();
   const [tab, setTab] = useState('analyze');
   const [text, setText] = useState(EXAMPLES[0].text);
   const [domain, setDomain] = useState('All domains');
@@ -70,7 +74,9 @@ function Workspace() {
       } else {
         response = await api('/api/v1/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ procurement_text: text, domain_filter: domain === 'All domains' ? null : domain, top_k: 5, role: userRole }) });
       }
-      setResult(await response.json());
+      const data = await response.json();
+      setResult(data);
+      if (file) recordUpload(file, data, userRole);
     } catch (e) { setError(e.message || 'Unable to analyze specification.'); }
     finally { setBusy(false); }
   }
@@ -141,6 +147,7 @@ function Workspace() {
             <div className="panel-top"><div><div className="eyebrow">01 / TENDER INPUT</div><h2>What are you buying?</h2></div><div className="mode-chip"><FileText size={14} /> {isOfficer ? 'DRAFT REVIEW' : 'BID INPUT'}</div></div>
             <div className="quick-label">START WITH AN EXAMPLE</div>
             <div className="example-grid">{EXAMPLES.map((example, i) => <button className={`example-card ${text === example.text ? 'selected-example' : ''}`} key={example.name} onClick={() => { setText(example.text); setFile(null); setDomain('All domains'); setResult(null); }}><span className="example-num">0{i + 1}</span><span><b>{example.name}</b><small>{example.meta}</small></span><ArrowRight size={14} /></button>)}</div>
+            <div className="demo-pdf-kit"><div className="demo-pdf-kit-head"><div><span className="eyebrow">UPLOAD-READY DEMO DOCUMENTS</span><b>Try a role-specific PDF</b></div><span className="demo-pdf-note">Text PDF · fictional · no personal data</span></div><div className="demo-pdf-links">{DEMO_PDF_DOWNLOADS.map(sample => <a className={`demo-pdf-link ${sample.role.toLowerCase()}`} key={sample.role} href={sample.url} download={sample.filename} target="_blank" rel="noreferrer"><span><FileText size={15} /><b>{sample.name}</b><small>{sample.detail}</small></span><Download size={15} /></a>)}</div></div>
             <div className="input-tools"><span>TENDER TEXT</span><label className="file-pick upload-emphasis"><Upload size={15} /><span>{file ? file.name : 'Upload PDF / DOCX / TXT'}</span><input aria-label="Upload tender PDF, DOCX or TXT" type="file" accept=".pdf,.docx,.txt" onChange={e => { setFile(e.target.files?.[0] || null); if (e.target.files?.[0]) { setText(''); setResult(null); } }} /></label></div>
             <textarea value={text} onChange={e => { setText(e.target.value); setFile(null); setResult(null); }} placeholder="Paste tender requirements, material properties, test criteria and certification conditions…" />
             <div className="textarea-foot"><span>PASTE TEXT OR UPLOAD PDF / DOCX / TXT</span><span>{text.split('\n').length} LINES&nbsp; / &nbsp;{words} WORDS</span></div>
@@ -156,7 +163,7 @@ function Workspace() {
         </section>}
       </>}
       {tab === 'analytics' && <div data-reveal><Analytics data={analytics} /></div>}
-      {tab === 'history' && isOfficer && <BidderHistoryView entries={bidderHistory} stats={bidderHistoryStats} />}
+      {tab === 'history' && isOfficer && <BidderHistoryView entries={bidderHistory} stats={bidderHistoryStats} uploads={uploadHistory} uploadStats={uploadHistoryStats} />}
       {tab === 'projects' && !isOfficer && <DemoProjectOutlook technicalField={bidderProfile?.technicalField || ''} onChoose={exampleName => { const example = EXAMPLES.find(item => item.name === exampleName); if (example) { setText(example.text); setFile(null); setDomain('All domains'); setResult(null); setTab('analyze'); } }} />}
       {tab === 'directory' && <section className="panel directory-panel" data-reveal><div className="directory-head"><div><div className="eyebrow">REFERENCE CATALOG / {catalogCount} ENTRIES</div><h2>Indian Standards directory</h2></div><div className="search-box"><Search size={15} /><input placeholder="Search code, product, keyword…" value={search} onChange={e => setSearch(e.target.value)} /></div></div><div className="domain-pills">{DOMAINS.slice(1).map(d => <button key={d} className={domain === d ? 'selected' : ''} onClick={() => setDomain(domain === d ? 'All domains' : d)}>{d}</button>)}</div><Directory data={catalog.filter(s => domain === 'All domains' || s.domain === domain)} loading={catalogLoading} /></section>}
     </main>
@@ -171,15 +178,35 @@ export function getWorkspaceNav(isOfficer) {
     : [['analyze', 'Bid readiness', FileCheck2], ['projects', 'Upcoming projects', CalendarDays], ['analytics', 'Bid activity', BarChart3], ['directory', 'Standards library', BookOpen]];
 }
 
-function BidderHistoryView({ entries, stats }) {
+function BidderHistoryView({ entries, stats, uploads = [], uploadStats = { uploadCount: 0, officerUploads: 0, bidderUploads: 0, pdfUploads: 0 } }) {
   return <section className="history-view" data-reveal>
     <div className="history-intro panel"><div className="history-intro-mark"><UsersRound size={19} /></div><div><div className="eyebrow">OFFICER DESK · DEMO ACTIVITY</div><h2>Bidder / Contractor history</h2><p>Counts demo Bidder entries made in this browser. A repeated name can represent the same person or different people; names and profiles are not verified.</p></div><Tag tone="amber">LOCAL DEMO ONLY</Tag></div>
     <div className="history-kpis"><div className="panel history-kpi"><span>Bidder demo sessions</span><b>{stats.sessionCount}</b><small>Each successful demo Bidder entry</small></div><div className="panel history-kpi"><span>Distinct names entered</span><b>{stats.distinctNameCount}</b><small>Text labels only, not verified identities</small></div><div className="panel history-kpi"><span>Technical fields shown</span><b>{stats.technicalFieldCount}</b><small>Categories represented in this browser</small></div></div>
     <section className="panel history-register"><div className="history-register-head"><div><div className="eyebrow">RECENT ACTIVITY</div><h3>Demo Bidder entries</h3></div><span>Up to 100 recent entries · stored on this device only</span></div>
       {entries.length ? <div className="history-table-wrap"><table className="history-table"><caption className="sr-only">Browser-local demo Bidder history; all profiles are self-reported and unverified.</caption><thead><tr><th scope="col">Entered</th><th scope="col">Name entered</th><th scope="col">Experience</th><th scope="col">Main technical field</th><th scope="col">Record status</th></tr></thead><tbody>{entries.map(entry => <tr key={entry.id}><td><time dateTime={entry.startedAt}>{formatDemoDate(entry.startedAt)}</time></td><td>{entry.displayName}</td><td>{entry.experienceYears} years</td><td>{entry.technicalField}</td><td><Tag tone="soft">UNVERIFIED DEMO</Tag></td></tr>)}</tbody></table></div> : <Empty text="No Bidder demo sessions have been entered in this browser yet." />}
     </section>
+    <UploadHistoryView uploads={uploads} stats={uploadStats} />
     <div className="history-disclaimer"><ShieldCheck size={15} /><span>This history is local to this browser and is not a central bidder registry or procurement record. It may be unavailable on another device or after browser storage is cleared.</span></div>
   </section>;
+}
+
+export function UploadHistoryView({ uploads, stats }) {
+  return <section className="panel upload-history-register">
+    <div className="history-register-head"><div><div className="eyebrow">DOCUMENT ANALYSIS LOG</div><h3>Uploaded tender PDFs and offers</h3><p>History keeps the filename and concise results only; original file bytes and full extracted document text are not retained.</p></div><Tag tone="soft">{stats.uploadCount} UPLOADS · {stats.pdfUploads} PDF</Tag></div>
+    {uploads.length ? <div className="upload-history-list">{uploads.map(item => <article className="upload-history-item" key={item.id}>
+      <div className="upload-history-top"><div className="upload-history-file"><span className="upload-file-icon"><FileText size={16} /></span><div><b>{item.filename}</b><small><time dateTime={item.uploadedAt}>{formatDemoDate(item.uploadedAt)}</time> · {formatFileSize(item.sizeBytes)} · {item.fileType}</small></div></div><Tag tone={item.uploadedAs === 'officer' ? 'green' : 'amber'}>{item.uploadedAs === 'officer' ? 'OFFICER UPLOAD' : 'BIDDER UPLOAD'}</Tag></div>
+      <div className="upload-history-match"><span className="eyebrow">TOP STANDARD MATCH</span><b>{item.primaryStandard || 'No standard match'}{item.primaryStandardTitle ? ` · ${item.primaryStandardTitle}` : ''}</b>{item.recommendations?.length > 1 && <small>Also suggested: {item.recommendations.slice(1).map(hit => hit.code).filter(Boolean).join(' · ')}</small>}</div>
+      <div className="upload-role-details"><div className="upload-role-card"><div className="eyebrow">OFFICER REVIEW</div><b>{item.officer?.counts?.aligned || 0} aligned · {item.officer?.counts?.partial || 0} partial · {item.officer?.counts?.missing || 0} missing · {item.officer?.counts?.deviated || 0} deviated</b><small>{item.officer?.draftClauseCount || 0} draft clauses · {item.officer?.checklistItemCount || 0} checklist items · {item.officer?.obsoleteWarningCount || 0} edition checks</small></div><div className="upload-role-card bidder"><div className="eyebrow">BIDDER READINESS</div><b>{item.bidder?.readinessScore === null || item.bidder?.readinessScore === undefined ? 'No clause score' : `${item.bidder.readinessScore}% · ${item.bidder.verdict || 'Screening summary'}`}</b><small>{item.bidder?.counts?.aligned || 0} aligned · {item.bidder?.counts?.partial || 0} partial · {item.bidder?.counts?.missing || 0} missing · {item.bidder?.counts?.deviated || 0} deviated</small></div></div>
+      {!!item.bidder?.gaps?.length && <div className="upload-history-gaps"><b>Bidder evidence to review</b><ul>{item.bidder.gaps.slice(0, 3).map((gap, index) => <li key={`${gap.parameter}-${index}`}><Tag tone={gap.status === 'Deviated' || gap.status === 'Missing' ? 'amber' : 'soft'}>{gap.status}</Tag><span>{gap.parameter}</span><small>{gap.action}</small></li>)}</ul></div>}
+      {!!item.extractedParameters?.length && <div className="upload-extracted"><span className="eyebrow">EXTRACTED FROM PDF</span>{item.extractedParameters.slice(0, 5).map(group => <span className="upload-extracted-chip" key={group.label}>{group.label}: {group.values.join(', ')}</span>)}</div>}
+    </article>)}</div> : <Empty text="No PDF analysis has been uploaded in this browser yet. Download either role-specific sample, return to Tender desk and upload it, then run the check." />}
+    <div className="upload-history-foot">{stats.officerUploads} Officer uploads · {stats.bidderUploads} Bidder uploads · browser-local demo log only</div>
+  </section>;
+}
+
+function formatFileSize(bytes = 0) {
+  const size = Number(bytes) || 0;
+  return size < 1024 * 1024 ? `${Math.max(1, Math.round(size / 1024))} KB` : `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function formatDemoDate(value) {

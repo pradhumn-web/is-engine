@@ -15,7 +15,8 @@ To set it up, connect `pradhumn-web/is-engine` in Render and apply the Blueprint
 3. Inspect extracted parameters and hybrid-ranked standard recommendations.
 4. Use **Change workspace** in the header to compare the Officer review and the Bidder readiness desk. The Officer sees the self-reported demo bidder profile and browser-local Bidder session history; the Bidder can review five illustrative upcoming-project scenarios with practical preparation notes.
 5. Open clause comparison, filter conformance findings, and copy the amendment language.
-6. Use the Officer-only **Bidder history** tab to inspect up to 100 browser-local demo entries. The Bidder-only **Upcoming projects** tab contains five fictional scenarios and links to related sample tenders. Visit the searchable 50-entry standards catalog; only Officers see the audit report export.
+6. In **Tender desk**, download the role-specific Officer tender PDF or incomplete Bidder offer PDF, upload it and run the analysis. Use the Officer-only **Bidder history** tab to see both the session register and processed-upload summaries. It keeps filenames and concise findings—not document bytes or full extracted text—locally in the same browser.
+7. The Bidder-only **Upcoming projects** tab contains five fictional scenarios and links to related sample tenders. Visit the searchable 50-entry standards catalog; only Officers see the audit report export.
 
 ## Start locally
 
@@ -44,6 +45,7 @@ Vite proxies `/api` and `/health` to `127.0.0.1:8000`. API docs are at `http://l
 cd backend
 PYTHONPATH=. pytest -q test_backend.py
 cd ../frontend
+npm test
 npm run build
 ```
 
@@ -61,7 +63,7 @@ Managed full-stack project checks: `pnpm check && pnpm test && pnpm build`.
 
 ## Prototype boundaries
 
-The 50-entry corpus is illustrative. Twenty curated demo records contain clause summaries and demo screening rules; 30 additional BIS-sourced entries are catalogue-discovery records only. Those 30 have no populated clause summaries or verified QCO applicability, and are deliberately excluded from clause-level scoring. None of the corpus is an authoritative BIS register. Check current editions, amendments, QCO notifications, CRS scope and tender applicability against official sources before procurement or legal reliance. Automated analysis is not engineering, legal or certification advice. The role picker is a **demo-only workspace selector**, not account authentication: it requests no password and does not verify identity, role, or procurement authority. Bidder name, experience, and field are self-reported and stored locally in this browser; Officer history counts explicit demo entries and is not a verified or central bidder registry. The Upcoming projects are fictional practice scenarios—not live or confirmed procurement notices. Profile and history are not transmitted to the analysis service. The export control is hidden in the Bidder interface for role clarity—not secured access control. Analytics and indexing are in-memory; scanned PDFs are not OCR'd. The preview is not a permanent public deployment. Free hosting may sleep when idle, and all data held only in process memory resets on restart or redeploy.
+The 50-entry corpus is illustrative. Twenty curated demo records contain clause summaries and demo screening rules; 30 additional BIS-sourced entries are catalogue-discovery records only. Those 30 have no populated clause summaries or verified QCO applicability, and are deliberately excluded from clause-level scoring. None of the corpus is an authoritative BIS register. Check current editions, amendments, QCO notifications, CRS scope and tender applicability against official sources before procurement or legal reliance. Automated analysis is not engineering, legal or certification advice. The role picker is a **demo-only workspace selector**, not account authentication: it requests no password and does not verify identity, role, or procurement authority. Bidder name, experience, and field are self-reported and stored locally in this browser; Officer history counts explicit demo entries and is not a verified or central bidder registry. Successful uploads add a browser-local record with a sanitized filename and concise, role-specific findings; original file bytes and complete extracted text are not stored by this history feature. The Officer PDF describes a complete tender requirement; the Bidder PDF is a separate, fictional incomplete offer. The rule engine checks limited explicit absence-of-evidence statements so terms listed under “not submitted” are not counted as proof; this remains a narrow heuristic, not general negation understanding. The sample PDFs are fictional and intentionally distinct. The Upcoming projects are fictional practice scenarios—not live or confirmed procurement notices. Profile and history are not transmitted to the analysis service. The export control is hidden in the Bidder interface for role clarity—not secured access control. Analytics and indexing are in-memory; scanned PDFs are not OCR'd. The preview is not a permanent public deployment. Free hosting may sleep when idle, and all data held only in process memory resets on restart or redeploy.
 
 ## SIH submission guide
 

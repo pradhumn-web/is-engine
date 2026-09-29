@@ -4,6 +4,17 @@ import re
 from typing import Any
 
 
+def _explicitly_missing_evidence(text: str, cues: set[str]) -> bool:
+    """Return true when a clause-relevant sentence explicitly says evidence is absent."""
+    negative = re.compile(r"\b(?:no|not|without|missing|lacks?|never)\b", re.I)
+    evidence = re.compile(r"\b(?:report|evidence|test|result|certificate|licen[cs]e|analysis|composition|traceability|attached|provided|submitted|included|available|identified|heat|lot|batch|number)\b", re.I)
+    for sentence in re.split(r"(?<=[.;:\n])\s*|[•]", text):
+        lower_sentence = sentence.lower()
+        if any(cue in lower_sentence for cue in cues) and negative.search(sentence) and evidence.search(sentence):
+            return True
+    return False
+
+
 def extract_parameters(text: str) -> dict[str, Any]:
     patterns = {
         "is_codes": r"\bIS\s*\d{3,5}(?:\s*\([^)]*\))?(?:\s*:\s*\d{4})?",
@@ -38,7 +49,9 @@ def check_compliance(text: str, standard: dict[str, Any]) -> dict[str, Any]:
         hits = sum(1 for cue in cues if cue in lower)
         critical = clause.get("criticality", "Medium").lower() in {"critical", "high"}
         certification_clause = any(k in (title + requirement).lower() for k in ("registration", "certification", "traceability", "marking"))
-        if certification_clause and not any(x in lower for x in ("bis", "cm/l", "nabl", "certificate", "license", "licence", "test report")):
+        if _explicitly_missing_evidence(text, cues):
+            status = "Missing"
+        elif certification_clause and not any(x in lower for x in ("bis", "cm/l", "nabl", "certificate", "license", "licence", "test report")):
             status = "Missing"
         elif hits >= 3 or code_mentioned and hits >= 1:
             status = "Aligned"

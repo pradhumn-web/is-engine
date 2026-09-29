@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { DEMO_PROJECTS, EXAMPLES, getWorkspaceNav, hasClauseAudit } from './App.jsx';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { DEMO_PDF_DOWNLOADS, DEMO_PROJECTS, EXAMPLES, getWorkspaceNav, hasClauseAudit, UploadHistoryView } from './App.jsx';
 
 describe('BIS.SPEC tender demonstration data', () => {
   it('offers seven tender examples including the three new scenarios', () => {
@@ -42,5 +44,30 @@ describe('BIS.SPEC tender demonstration data', () => {
     expect(DEMO_PROJECTS.every(project => project.illustrative && project.horizon.startsWith('Illustrative'))).toBe(true);
     expect(DEMO_PROJECTS.every(project => EXAMPLES.some(example => example.name === project.exampleName))).toBe(true);
     expect(DEMO_PROJECTS.every(project => project.preparation.length >= 3)).toBe(true);
+  });
+
+  it('offers different Officer tender and Bidder offer PDFs for upload practice', () => {
+    expect(DEMO_PDF_DOWNLOADS).toHaveLength(2);
+    expect(DEMO_PDF_DOWNLOADS.map(pdf => pdf.role)).toEqual(['Officer', 'Bidder']);
+    expect(DEMO_PDF_DOWNLOADS[0].filename).not.toBe(DEMO_PDF_DOWNLOADS[1].filename);
+    expect(DEMO_PDF_DOWNLOADS[0].detail).toContain('tender draft');
+    expect(DEMO_PDF_DOWNLOADS[1].detail).toContain('incomplete');
+  });
+
+  it('renders both role-specific finding summaries from a PDF upload history item', () => {
+    const html = renderToStaticMarkup(createElement(UploadHistoryView, {
+      uploads: [{
+        id: 'demo', filename: 'officer-spec.pdf', uploadedAt: '2026-09-29T10:00:00.000Z', fileType: 'PDF', sizeBytes: 2048,
+        uploadedAs: 'officer', primaryStandard: 'IS 1786:2008', primaryStandardTitle: 'High strength deformed steel bars', recommendations: [], extractedParameters: [],
+        officer: { counts: { aligned: 1, partial: 1, missing: 1, deviated: 0 }, draftClauseCount: 3, checklistItemCount: 5, obsoleteWarningCount: 0 },
+        bidder: { counts: { aligned: 1, partial: 1, missing: 1, deviated: 0 }, readinessScore: 42, verdict: 'HIGH DISQUALIFICATION RISK', gaps: [{ parameter: 'Heat chemistry', status: 'Missing', action: 'Attach a heat-analysis report.' }] },
+      }],
+      stats: { uploadCount: 1, officerUploads: 1, bidderUploads: 0, pdfUploads: 1 },
+    }));
+    expect(html).toContain('officer-spec.pdf');
+    expect(html).toContain('OFFICER REVIEW');
+    expect(html).toContain('BIDDER READINESS');
+    expect(html).toContain('42%');
+    expect(html).toContain('Heat chemistry');
   });
 });

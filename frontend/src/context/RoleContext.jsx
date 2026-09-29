@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { appendBidderHistory, BIDDER_PROFILE_STORAGE_KEY, createDemoSession, readBidderHistory, readBidderProfile, readDemoSession, SESSION_STORAGE_KEY, summarizeBidderHistory } from './roleSession.js';
+import { appendUploadHistory, readUploadHistory, summarizeUploadHistory } from './uploadHistory.js';
 
 const RoleContext = createContext(null);
 
@@ -7,6 +8,7 @@ export function RoleProvider({ children }) {
   const [session, setSession] = useState(() => readDemoSession());
   const [lastBidderProfile, setLastBidderProfile] = useState(() => readBidderProfile());
   const [bidderHistory, setBidderHistory] = useState(() => readBidderHistory());
+  const [uploadHistory, setUploadHistory] = useState(() => readUploadHistory());
 
   useEffect(() => {
     try {
@@ -36,7 +38,10 @@ export function RoleProvider({ children }) {
     signOut: () => setSession(null),
     bidderHistory,
     bidderHistoryStats: summarizeBidderHistory(bidderHistory),
-  }), [session, lastBidderProfile, bidderHistory]);
+    uploadHistory,
+    uploadHistoryStats: summarizeUploadHistory(uploadHistory),
+    recordUpload: (file, result, role) => setUploadHistory(appendUploadHistory(file, result, role)),
+  }), [session, lastBidderProfile, bidderHistory, uploadHistory]);
 
   return <RoleContext.Provider value={value}>{children}</RoleContext.Provider>;
 }

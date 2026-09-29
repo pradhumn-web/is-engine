@@ -98,7 +98,7 @@ The present system uses sparse lexical vectors and rules; it does **not** use de
 
 ### 5.4 Clause-level screening
 
-For each retrieved candidate, the compliance checker compares the tender text with structured clauses from that catalog record. It uses keyword-cue overlap, whether the IS code is explicitly mentioned, whether expected certification evidence is named, clause criticality, and selected numeric maximum thresholds.
+For each retrieved candidate, the compliance checker compares the tender text with structured clauses from that catalog record. It uses keyword-cue overlap, whether the IS code is explicitly mentioned, whether expected certification evidence is named, clause criticality, selected numeric maximum thresholds, and a narrow sentence-level check for explicit absence-of-evidence language. When a matching clause is accompanied by nearby wording such as “no report attached” or “not provided,” that check forces a Missing status instead of interpreting keyword presence as proof. This is a targeted prototype safeguard, not general natural-language negation handling.
 
 Each clause receives one of four screening labels:
 
@@ -117,6 +117,8 @@ The analysis response includes both perspectives:
 - **Contractor view:** readiness indicator, compliance matrix, required evidence, and conditional equivalence notes.
 
 The role selector presents distinct Officer and Bidder desks. In this demonstration build, the bidder may enter self-reported experience and a primary technical field; the profile stays in this browser and is shown to the Officer workspace without being sent to the analysis API. The Officer interface offers the audit report control; the Bidder interface hides it as a presentation choice, not an authorization boundary. Catalogue-only records do not receive a clause-readiness score or imply audit completion. The UI also provides the standards directory, session analytics and side-by-side wording comparison.
+
+The workbench includes two different, fictional, text-extractable PDF examples: an Officer-side tender specification and a deliberately incomplete Bidder technical offer. A successful document analysis records the sanitized filename, role, top standard match, bounded extracted-parameter summary, and separate Officer/Bidder findings in browser-local storage. It does not retain the uploaded bytes or full extracted tender text in this history feature. Switching role in the same browser lets an Officer inspect a Bidder PDF run; this is a demo aid, not durable or synchronized history.
 
 ## 6. Data and knowledge base
 
@@ -147,18 +149,20 @@ Request validation includes text length, domain, role, result-count, and file-si
 - **Report generation:** `fpdf2`.
 - **Data store:** JSON corpus loaded into memory; analytics are held in process memory for the running prototype.
 
-A persistent relational database, authentication, central/long-term analysis history, and automated standards-feed synchronization are not part of the current implementation. The Officer history tab reads a bounded (100-entry) browser-local log created only on explicit Bidder demo entry; counts are descriptive and names are not verified identities. The Bidder project tab uses static illustrative preparation scenarios and does not claim live tenders.
+A persistent relational database, production authentication, central/long-term analysis history, and automated standards-feed synchronization are not part of the current implementation. The Officer history tab reads bounded (100-entry) browser-local demo bidder and upload-analysis logs; counts are descriptive and names are not verified identities. Original file bytes and full extracted tender text are not included in the upload-history records. The Bidder project tab uses static illustrative preparation scenarios and does not claim live tenders.
 
 ## 9. Verification completed
 
-The current backend test suite contains six checks covering:
+The current backend test suite contains eight checks covering:
 
 1. Exactly 50 unique catalog records, including 30 discovery-only entries without QCO claims or clause summaries.
 2. Retrieval of a new catalogue-only record without fabricating clause-audit findings.
 3. Leading retrieval results for representative steel-rebar and cable queries.
 4. Availability of both role views and a compliance matrix.
-5. Valid PDF report generation.
-6. Scoping a carbon-limit deviation to the chemistry-related clause. Frontend tests cover required profile fields, browser-local session and bidder-history persistence, role-specific navigation, bounded history summaries, and the illustrative project scenarios.
+5. Explicitly missing evidence not being scored as aligned.
+6. Valid PDF report generation.
+7. Scoping a carbon-limit deviation to the chemistry-related clause.
+8. Real Officer-tender and Bidder-offer PDF parsing, with lower readiness and gap labels for the incomplete Bidder offer. Frontend tests cover required profile fields, browser-local session and upload-history persistence, role-specific navigation, bounded history summaries, and the illustrative project scenarios.
 
 The frontend production build has also been run successfully. These tests verify selected behaviors; they do not establish standards coverage, real-tender accuracy, or production readiness.
 
@@ -168,7 +172,7 @@ For SIH evaluation, the next useful validation is a reviewer-labelled test set o
 
 - The corpus is small, illustrative, local, and manually maintained; no live BIS synchronization is implemented. Thirty discovery-only records are not clause-audited.
 - Retrieval is keyword/statistics-based and may miss synonyms, context, cross-references, or complex product scope.
-- Parameter extraction and compliance statuses are rule-based and can misread negation, units, tables, exceptions, or ambiguous sentences.
+- Parameter extraction and compliance statuses are rule-based; only a narrow set of explicit evidence-absence statements is checked. Complex negation, units, tables, exceptions, or ambiguous sentences can still be misread.
 - OCR, multilingual tender understanding, amendment-aware version resolution, and full-standard clause verification are not implemented.
 - Session analytics and derived analysis results are held in server memory and are lost on restart. No durable history or account-based access control exists.
 - Uploads are read and parsed by the API; derived results can include excerpts and filenames in memory. Do not submit confidential tenders or personal data to a public demo without an approved privacy/security review.
